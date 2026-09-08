@@ -1,0 +1,25 @@
+---
+import "../styles/global.css";
+import Nav from "../components/nav.astro";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+        <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>dk-3</title>
+		<style>
+			h1 {
+				opacity: 0;
+			}
+		</style>
+	</head>
+	<body class="font-geist font-light">
+        <Nav />
+        <slot />
+	</body>
+</html>

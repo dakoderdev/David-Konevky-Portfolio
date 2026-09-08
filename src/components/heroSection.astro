@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+---
+<section class="w-full min-h-dvh flex items-center justify-center">		
+    <div id="iPhone" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-118.5 h-56.75">
+        <Image src="/iphone.png" alt="Horizontal iPhone frame" width={474} height={227} class="z-10 absolute w-full h-full pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <div class="z-11 w-sm min-h-40 flex flex-col items-center justify-center">
+            <h1 class="text-3xl font-medium tracking-tight">David Konevky</h1>
+            <p class="tracking-tight">Design Engineer</p>
+        </div>
+        <button id="iPhone-button" class="z-11 absolute left-5 rounded-full size-10"></button>
+    </div>
+</section>
+<script>
+    import gsap from "gsap";
+    
+    let iPhoneButton = document.querySelector("#iPhone-button");
+    let iPhone = document.querySelector("#iPhone");
+    let iPhoneTimeline = gsap.timeline({ paused: true });
+    
+    iPhoneTimeline.to(iPhone, { rotate: 3, scale: 1.02, duration: 0.2 })
+                    .to(iPhone, { rotate: -3, scale: 1.05, duration: 0.2 })
+                    .to(iPhone, { rotate: 0, scale: 1, duration: 0.2 });
+    
+    iPhoneButton?.addEventListener("click", () => {
+        iPhoneTimeline.restart();
+    });
+</script>

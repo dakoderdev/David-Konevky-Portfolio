@@ -1,0 +1,86 @@
+<div id="sweepGrid" class="grid grid-cols-3 place-self-center gap-3">
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+    <div class="media size-22">
+        <div class="size-full glossy-icon shadow-md rounded-2xl pointer-events-none will-change-transform"></div>
+    </div>
+</div>
+
+<script>
+    import gsap from "gsap";
+    import { InertiaPlugin } from "gsap/InertiaPlugin";
+
+    gsap.registerPlugin(InertiaPlugin);
+
+    let oldX = 0,
+    oldY = 0,
+    deltaX = 0,
+    deltaY = 0;
+
+    const grid = document.querySelector<HTMLDivElement>('#sweepGrid')
+
+    grid?.addEventListener("mousemove", (e) => {
+        deltaX = e.clientX - oldX;
+        deltaY = e.clientY - oldY;
+        oldX = e.clientX;
+        oldY = e.clientY;
+    })
+
+    grid?.querySelectorAll<HTMLDivElement>('.media').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    tl.kill()
+                }
+            })
+            tl.timeScale(1.2)
+
+            const media = el.querySelector('div')
+
+            tl.to(media, {
+               inertia: {
+                    x: {
+                        velocity: deltaX * 20,
+                        end: 0
+                    },
+                    y: {
+                        velocity: deltaY * 20,
+                        end: 0
+                    },
+                },
+            })
+
+            tl.fromTo(media, {
+                rotate: 0
+            }, {
+                duration: 0.4,
+                rotate: (Math.random() - 0.5) * 30, // Returns a value between -15 & 15
+                yoyo: true,
+                repeat: 1,
+                ease: 'power1.inOut' // Will slow at the begin and the end
+            }, '<') // Means that the animation starts at the same time as the previous tween
+        })
+    })
+</script>

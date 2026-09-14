@@ -1,0 +1,16 @@
+---
+import { DOT_ICONS, type DotIconName } from "../data/dotIcons";
+
+interface Props {
+  icon: DotIconName;
+}
+
+const { icon } = Astro.props;
+const points = DOT_ICONS[icon];
+---
+
+<svg class="w-4" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  {points.map(([cx, cy]) => (
+    <circle cx={cx} cy={cy} r="1.125" fill="white" stroke="white" stroke-width="0.25" />
+  ))}
+</svg>

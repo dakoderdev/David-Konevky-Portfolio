@@ -16,8 +16,8 @@ const items = MY_SKILLS.featured;
       </div>
     ))}
   </div>
-  <div class="absolute -left-12 top-1/2 -translate-y-1/2 w-12 bg-linear-to-r from-white/10 to-transparent h-[calc(8rem*2+2rem)]"></div>
-  <div class="absolute -right-4 top-1/2 -translate-y-1/2 w-12 bg-linear-to-l from-white/10 to-transparent h-[calc(8rem*2+2rem)]"></div>
+  <div id="left-shine" class="absolute -left-12 top-1/2 -translate-y-1/2 w-32 bg-linear-to-r from-white/10 to-transparent h-[calc(8rem*2+2rem)]"></div>
+  <div id="right-shine" class="absolute -right-12 top-1/2 -translate-y-1/2 w-32 bg-linear-to-l from-white/10 to-transparent h-[calc(8rem*2+2rem)]"></div>
 </div>
 
 <script>
@@ -99,6 +99,31 @@ const items = MY_SKILLS.featured;
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(applyMode, 150);
     });
+    
+      const leftShine = document.getElementById("left-shine");
+      const rightShine = document.getElementById("right-shine");
+
+      const randomWidth = () => `${Math.random() * 2}rem`;
+      const tl = gsap.timeline({ repeat: -1 });
+
+      tl.fromTo(
+        leftShine,
+        { width: "8rem" },
+        { duration: 0.3, width: `${Math.random() * 5}rem` },
+        0
+      )
+      .fromTo(
+        rightShine,
+        { width: "8rem" },
+        { duration: 0.3, width: `${Math.random() * 5}rem` },
+        0
+      )
+      .to(
+        [leftShine, rightShine],
+        { duration: 0.1, width: "8rem" }
+      );
+
+      tl.play();
   }
 
   if (document.readyState === "loading") {

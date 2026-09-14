@@ -78,11 +78,6 @@ const SKILLS = {
         name: "Supabase",
         svg: "/skills/supabase.svg",
     },
-    rest: {
-        name: "REST APIs",
-        svg: "/skills/rest.svg",
-    },
-
     git: {
         name: "Git",
         svg: "/skills/git.svg",
@@ -152,7 +147,6 @@ const MY_SKILLS = {
         SKILLS.prisma,
         SKILLS.neon,
         SKILLS.supabase,
-        SKILLS.rest,
     ],
 
     infrastructure: [

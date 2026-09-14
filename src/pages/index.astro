@@ -2,17 +2,98 @@
 import Layout from "../layouts/layout.astro";
 import Intro from "../components/intro.astro";
 import HeroSection from "../components/heroSection.astro";
-import SweepableGrid from "../components/sweepableGrid.astro";
+import TrashBin from "../components/trashBin.astro";
 ---
 
 <Layout>
-	{/*<Intro />*/}
-	<HeroSection />
-	<section class="grid sm:grid-cols-2 px-12 py-37 place-items-center">
-		<div class="flex flex-col gap-4.5">
-			<h2 class="text-[54px] leading-[1.15] tracking-tight font-medium text-balance">Inspired by everything, everywhere, all at once</h2>
-			<p class="text-[28px] leading-[1.15] tracking-tight">My work is to build in relation to your needs, filtered through my point of view. I love to take a hands-on approach on everything that I do.</p>
-		</div>
-		<SweepableGrid />
-	</section>
+  {/*<Intro />*/}
+  <HeroSection />
+  <section class="grid sm:grid-cols-2 gap-4 place-items-center">
+    <div class="flex flex-col items-center px-4 py-8 sm:pl-12 w-full sm:py-37 gap-4.5">
+      <h2 class="text-[54px] leading-[1.15] tracking-tight font-pixel w-full min-h-31 font-medium text-balance">Translating your ideas in 20/20 vision</h2>
+      <p class="text-[28px] leading-[1.15] tracking-tight w-full">I love to take a hands-on approach on everything that I do. My work is to build in relation to your needs, filtered through my point of view.</p>
+    </div>
+    <div class="h-full min-h-92 sm:min-h-auto w-full relative overflow-hidden">
+	  <TrashBin />
+    </div>
+  </section>
+  <section class="min-h-92 bg-black">
+
+  </section>
 </Layout>
+
+<script>
+  import gsap from "gsap";
+  import { SplitText } from "gsap/SplitText";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(SplitText, ScrollTrigger);
+
+  function fadeInRight(header) {
+    const split = SplitText.create(header, { type: "words, chars" });
+
+    gsap.from(split.chars, {
+      duration: 0.5,
+      x: 50,
+      autoAlpha: 0,
+      stagger: 0.025,
+      scrollTrigger: {
+        trigger: header,
+        start: "top 85%",
+        once: true,
+      },
+    });
+  }
+
+  function typewriter(header) {
+    const split = SplitText.create(header, { type: "chars" });
+    header.style.willChange = "contents";
+
+    const cursor = document.createElement("span");
+    cursor.textContent = "|";
+    cursor.style.opacity = "0";
+    cursor.style.marginLeft = "1px";
+    header.appendChild(cursor);
+
+    gsap.set(split.chars, { autoAlpha: 0 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: header,
+        start: "top 85%",
+        once: true,
+      },
+      onStart: () => {
+        gsap.set(cursor, { autoAlpha: 1 });
+      },
+      onComplete: () => {
+        header.style.willChange = "auto";
+        cursor.remove();
+      },
+    });
+
+    split.chars.forEach((char) => {
+      // slight randomness per character mimics real keystrokes instead of a metronome tick
+      tl.to(
+        char,
+        {
+          autoAlpha: 1,
+          duration: 0.01,
+          onStart: () => char.after(cursor),
+        },
+        `+=${gsap.utils.random(0.015, 0.06)}`,
+      );
+
+      // occasional longer pause, like a natural typing hesitation
+      if (Math.random() < 0.08) {
+        tl.to({}, { duration: gsap.utils.random(0.08, 0.18) });
+      }
+    });
+  }
+
+  const headers = document.querySelectorAll("h2");
+
+  headers.forEach((header) => {
+    typewriter(header);
+  });
+</script>

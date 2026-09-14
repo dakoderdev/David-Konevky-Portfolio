@@ -1,0 +1,299 @@
+<div class="absolute flex flex-col left-4 w-[calc(100%-4px)] h-full">
+  <div id="bin-container" class="relative w-full grow h-full overflow-hidden"></div>
+</div>
+
+<script>
+  import Matter from "matter-js";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ---- CONFIG: tweak everything here ----
+  const CONFIG = {
+    // icon sizing
+    iconHeight: 36, // px, roughly h-3
+
+    // spawn behaviour
+    spawnIntervalMs: 220, // ms between throws
+    spawnCount: 80, // total icons to throw (set to null for infinite)
+    spawnXJitter: 0.6, // fraction of container width to randomize spawn x around center
+    spawnYOffset: 80, // px above the container top that icons spawn (off screen)
+
+    // throw velocity (matter-js units, roughly px/frame at 60fps)
+    velocityXMin: -3,
+    velocityXMax: 3,
+    velocityYMin: 2,
+    velocityYMax: 5,
+    angularVelocityMin: -0.1,
+    angularVelocityMax: 0.1,
+
+    // physics
+    gravityY: 1,
+    restitution: 0.3, // bounciness
+    friction: 0,
+    frictionAir: 0.01,
+    density: 0.002,
+
+    // walls
+    wallThickness: 200,
+
+    // scroll trigger: how far into the viewport the bin must scroll before it fires, once
+    scrollTriggerStart: "top 85%",
+
+    // svg source list, each rendered at iconHeight with auto width
+    icons: [
+      `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="21.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="15.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="12.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="6.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="3.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="6.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="12.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="15.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="12.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="15.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="15.5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="12.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="9.5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="15.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="24.5" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="18.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="21.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+</svg>
+`,
+      `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="23" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="18.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="15.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+</svg>
+`,
+      `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="23" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="17" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="14" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="2" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="20" r="1.125" transform="rotate(-180 17 20)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="17" r="1.125" transform="rotate(-180 20 17)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="17" r="1.125" transform="rotate(-180 14 17)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="20" r="1.125" transform="rotate(-180 11 20)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="17" r="1.125" transform="rotate(-180 8 17)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="14" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="17" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="26" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+</svg>
+`, `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="20" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="17" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="14" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="5" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="8" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="12" r="1.125" transform="rotate(-180 17 12)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="14" r="1.125" transform="rotate(-180 14 14)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="14" cy="17" r="1.125" transform="rotate(-180 14 17)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="11" cy="12" r="1.125" transform="rotate(-180 11 12)" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="17" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="8" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="20" cy="17" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+<circle cx="23" cy="14" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
+</svg>
+`,
+    ],
+    // native viewBox aspect ratios (w/h) per icon above, used to compute auto width from iconHeight
+    iconAspectRatios: [22 / 22, 22 / 22, 22 / 22, 22 / 22, 22 / 22],
+  };
+
+  function rand(min: number, max: number) {
+    return min + Math.random() * (max - min);
+  }
+
+  function init() {
+    const container = document.getElementById("bin-container");
+    if (!container) return;
+
+    const { Engine, Runner, Bodies, Composite, Body } = Matter;
+
+    const engine = Engine.create();
+    engine.gravity.y = CONFIG.gravityY;
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const { wallThickness } = CONFIG;
+    const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width * 4, wallThickness, { isStatic: true });
+    const leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
+    const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
+    Composite.add(engine.world, [ground, leftWall, rightWall]);
+
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    type IconBody = { body: Matter.Body; el: HTMLElement; w: number; h: number };
+    const iconBodies: IconBody[] = [];
+
+    function spawnIcon() {
+      const idx = Math.floor(Math.random() * CONFIG.icons.length);
+      const svgMarkup = CONFIG.icons[idx];
+      const aspect = CONFIG.iconAspectRatios[idx] ?? 1;
+
+      const h = CONFIG.iconHeight;
+      const w = h * aspect;
+
+      const el = document.createElement("div");
+      el.style.position = "absolute";
+      el.style.top = "0";
+      el.style.left = "0";
+      el.style.width = `${w}px`;
+      el.style.height = `${h}px`;
+      el.style.pointerEvents = "none";
+      el.style.willChange = "transform";
+      el.innerHTML = svgMarkup;
+      const svgEl = el.querySelector("svg");
+      if (svgEl) {
+        svgEl.setAttribute("width", String(w));
+        svgEl.setAttribute("height", String(h));
+      }
+      container?.appendChild(el);
+
+      const centerX = width / 2 + rand(-width * CONFIG.spawnXJitter, width * CONFIG.spawnXJitter) / 2;
+      const spawnY = -CONFIG.spawnYOffset;
+
+      const body = Bodies.rectangle(centerX, spawnY, w, h, {
+        restitution: CONFIG.restitution,
+        friction: CONFIG.friction,
+        frictionAir: CONFIG.frictionAir,
+        density: CONFIG.density,
+      });
+
+      Body.setVelocity(body, {
+        x: rand(CONFIG.velocityXMin, CONFIG.velocityXMax),
+        y: rand(CONFIG.velocityYMin, CONFIG.velocityYMax),
+      });
+      Body.setAngularVelocity(body, rand(CONFIG.angularVelocityMin, CONFIG.angularVelocityMax));
+
+      Composite.add(engine.world, body);
+      iconBodies.push({ body, el, w, h });
+    }
+
+    let spawned = 0;
+    const spawnTimer = window.setInterval(() => {
+      spawnIcon();
+      spawned++;
+      if (CONFIG.spawnCount !== null && spawned >= CONFIG.spawnCount) {
+        window.clearInterval(spawnTimer);
+      }
+    }, CONFIG.spawnIntervalMs);
+
+    function render() {
+      for (const { body, el, w, h } of iconBodies) {
+        el.style.transform = `translate(${body.position.x - w / 2}px, ${body.position.y - h / 2}px) rotate(${body.angle}rad)`;
+      }
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  }
+
+  function setup() {
+    const container = document.getElementById("bin-container");
+    if (!container) return;
+
+    ScrollTrigger.create({
+      trigger: container,
+      start: CONFIG.scrollTriggerStart,
+      once: true,
+      onEnter: init,
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setup);
+  } else {
+    setup();
+  }
+</script>

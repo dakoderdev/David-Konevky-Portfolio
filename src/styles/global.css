@@ -2,7 +2,9 @@
 
 @theme base {
     --font-geist: 'Geist', sans-serif;
+    --font-pixel: 'Geist Pixel', sans-serif;
     --font-doto: 'Doto', sans-serif;
+    --background-image-dots: radial-gradient(black 1.2px, transparent 1.2px);
 }
 
 button {
@@ -28,6 +30,10 @@ button {
         #4C4C4C 50%,
         #000000 100%
     );
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 

@@ -3,7 +3,7 @@
     <svg id="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 78" class="h-4 w-auto fill-black transition-colors duration-300" data-astro-cid-l3rxwkef=""> <path d="m116.87,39.08C116.87,17.59,99.48.16,78,.09h0S0,.08,0,.08v78h78c21.48-.07,38.87-17.51,38.87-39Z" data-astro-cid-l3rxwkef=""></path> <rect x="117" width="39" height="78" data-astro-cid-l3rxwkef=""></rect> <polygon points="234 0 195 0 156 39 195 78 234 78 195 39 234 0" data-astro-cid-l3rxwkef=""></polygon> </svg>
     <ul class="flex">
       <li>
-        <a id="home" href="/#hero-section" class="py-1 px-3 text-nowrap selected"><kbd class="hidden md:inline-block">[H]</kbd> Home</a>
+        <a id="home" href="/#hero-section" class="py-1 px-3 text-nowrap font-bold"><kbd class="hidden md:inline-block">[H]</kbd> Home</a>
       </li>
       <li>
         <a id="work" href="/#work-section" class="py-1 px-3 text-nowrap"><kbd class="hidden md:inline-block">[W]</kbd> Work</a>
@@ -55,9 +55,6 @@
 </header>
 
 <style>
-  .selected {
-    font-weight: bold;
-  }
 </style>
 
 <script>
@@ -67,6 +64,23 @@
     b: "blog",
     c: "contact",
   };
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>("#site-nav ul a");
+
+  function setSelected (id: string) {
+    navLinks.forEach((link) => {
+      if (link.id === id) {
+        link.classList.add("font-bold");
+      } else {
+        link.classList.remove("font-bold");
+      }
+    })
+  }
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      setSelected(link.id);
+    });
+  });
 
   document.addEventListener("keydown", (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -80,6 +94,7 @@
     const link = document.getElementById(id);
     if (link instanceof HTMLAnchorElement) {
       e.preventDefault();
+      setSelected(id);
       link.click();
     }
   });
@@ -97,7 +112,7 @@
 
   if (nav && navIcon) {
     const LIGHT = { navBg: "bg-white/70", navText: "text-black", iconFill: "fill-black", linkBg: "bg-white/70" };
-    const DARK = { navBg: "bg-black/70", navText: "text-white", iconFill: "fill-white", linkBg: "bg-black/70" };
+    const DARK = { navBg: "bg-black/85", navText: "text-white", iconFill: "fill-white", linkBg: "bg-black/85" };
 
     const setTheme = (theme: "light" | "dark") => {
       const from = theme === "dark" ? LIGHT : DARK;
@@ -122,6 +137,29 @@
       const rect = nav.getBoundingClientRect();
       return rect.top + rect.height / 2;
     };
+
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>("#site-nav ul a");
+
+    const setSelected = (id: string) => {
+      navLinks.forEach((link) => {
+        link.classList.toggle("font-bold", link.id === id);
+      });
+    };
+
+    navLinks.forEach((link) => {
+      const hash = new URL(link.href, location.href).hash;
+      const section = hash ? document.querySelector<HTMLElement>(hash) : null;
+      if (!section) return;
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: () => `top ${getNavCenter()}px`,
+        end: () => `bottom ${getNavCenter()}px`,
+        onEnter: () => setSelected(link.id),
+        onEnterBack: () => setSelected(link.id),
+        invalidateOnRefresh: true,
+      });
+    });
 
     const themedSections = document.querySelectorAll<HTMLElement>("[data-nav-theme]");
 

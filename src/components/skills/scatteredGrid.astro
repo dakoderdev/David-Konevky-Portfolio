@@ -1,5 +1,5 @@
 ---
-import {MY_SKILLS} from "../data/skills.ts";
+import {MY_SKILLS} from "../../data/skills.ts";
 
 const items = MY_SKILLS.featured;
 ---
@@ -80,11 +80,11 @@ const items = MY_SKILLS.featured;
     let bound = false;
     function applyMode() {
       const desktop = isDesktop();
-      if (desktop && !bound) {
+      if (desktop && !bound && stage) {
         stage.addEventListener("mousemove", onMouseMove);
         stage.addEventListener("mouseleave", onMouseLeave);
         bound = true;
-      } else if (!desktop && bound) {
+      } else if (!desktop && bound && stage) {
         stage.removeEventListener("mousemove", onMouseMove);
         stage.removeEventListener("mouseleave", onMouseLeave);
         bound = false;

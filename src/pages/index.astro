@@ -1,12 +1,15 @@
 ---
 import Layout from "../layouts/layout.astro";
 import Intro from "../components/intro.astro";
-import HeroSection from "../components/heroSection.astro";
-import TrashBin from "../components/trashBin.astro";
-import ScatteredGrid from "../components/scatteredGrid.astro";
-import SkillTable from "../components/skillTable.astro";
-import DotIcon from "../components/dotIcon.astro";
+import HeroSection from "../components/hero/heroSection.astro";
+import TrashBin from "../components/miscellaneous-section/trashBin.astro";
+import ScatteredGrid from "../components/skills/scatteredGrid.astro";
+import SkillTable from "../components/skills/skillTable.astro";
+import DotIcon from "../components/skills/dotIcon.astro";
+import WorkGallery from "../components/work/workGallery.astro";
+
 import { MY_SKILLS } from "../data/skills";
+import PROJECTS from "../data/projects";
 ---
 
 <Layout>
@@ -33,8 +36,11 @@ import { MY_SKILLS } from "../data/skills";
       <SkillTable skills={MY_SKILLS.infrastructure} title="Infraestructura"><DotIcon icon="infraestructura" /></SkillTable>
     </div>
   </section>
-  <section id="work-section" data-nav-theme="light" class="min-h-[200vh] bg-white px-4 py-8 sm:pl-12 w-full sm:py-18">
-    <h2 class="text-5xl sm:text-[54px] leading-[1.15] tracking-tight text-center font-pixel w-full min-h-31 font-medium text-balance">Some of my work</h2>
+  <section id="work-section" data-nav-theme="light" class="relative bg-white px-4 py-8 sm:px-12 w-full sm:py-18">
+    <h2 class="text-center pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">My work</h2>
+  </section>
+  <section>
+
   </section>
 </Layout>
 
@@ -45,23 +51,7 @@ import { MY_SKILLS } from "../data/skills";
 
   gsap.registerPlugin(SplitText, ScrollTrigger);
 
-  function fadeInRight(header) {
-    const split = SplitText.create(header, { type: "words, chars" });
-
-    gsap.from(split.chars, {
-      duration: 0.5,
-      x: 50,
-      autoAlpha: 0,
-      stagger: 0.025,
-      scrollTrigger: {
-        trigger: header,
-        start: "top 85%",
-        once: true,
-      },
-    });
-  }
-
-  function typewriter(header) {
+  function typewriter(header : HTMLElement) {
     const split = SplitText.create(header, { type: "chars" });
     header.style.willChange = "contents";
 

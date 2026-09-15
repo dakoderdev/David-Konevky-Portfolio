@@ -1,214 +1,365 @@
-<section id="hero-section" data-nav-theme="light" class="relative w-full h-dvh min-h-screen overflow-hidden isolate bg-white">
-    <canvas id="hero-grid" class="absolute inset-0 pointer-events-none"></canvas>
-    <div id="hero-text" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-3 px-4 sm:px-5 pt-4 pb-3 sm:py-5 bg-white/70 backdrop-blur-xs">
-        <h1 class="opacity-100 text-nowrap text-5xl sm:text-6xl md:text-[5.5rem] font-black font-doto leading-[0.9] tracking-[-0.04em] text-center">
-            |DAVID---|<br />
-            |KONEVKY-|</h1>
-        <p class="font-medium text-center px-9">Design Engineer</p>
-    </div>
+---
+
+---
+
+<section
+  id="hero-section"
+  data-nav-theme="light"
+  class="relative w-full h-dvh min-h-screen overflow-hidden isolate bg-white"
+>
+  <canvas id="hero-grid" class="absolute inset-0 h-full w-full pointer-events-none"></canvas>
+  <div
+    id="hero-text"
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-3 px-4 sm:px-5 pt-4 pb-3 sm:py-5 bg-white/70 backdrop-blur-xs"
+  >
+    <h1
+      class="opacity-100 text-nowrap text-5xl sm:text-6xl md:text-[5.5rem] font-black font-doto leading-[0.9] tracking-[-0.04em] text-center"
+    >
+      |DAVID---|<br />
+      |KONEVKY-|
+    </h1>
+    <p class="font-medium text-center px-9">Design Engineer</p>
+  </div>
 </section>
 
 <script>
-    import gsap from "gsap";
+  import gsap from "gsap";
 
-    const CONFIG = {
-        cellSize: 10,
-        gap: 0.5,
-        waitBetweenSweeps: 0,
-        sweepDurationMs: 5000,
-        msPerCell: null as number | null,
-        noiseScale: 0.06,
-        charColor: "#000000",
-        fontFamily: "monospace",
+  const CONFIG = {
+    cellSize: 10,
+    gap: 0.5,
+    waitBetweenSweeps: 0,
+    sweepDurationMs: 4350,
+    /** The very first reveal after start(): fast and uncapped, so the field
+        appears essentially instantly instead of visibly building. */
+    firstSweepDurationMs: 220,
+    noiseScale: 0.06,
+    /** Perlin clusters around 0.5; >1 opens the ramp back up to its extremes. */
+    contrast: 1.2,
+    /** Hard cap per frame for normal (non-first) sweeps. Lower = chunkier edge. */
+    maxCellsPerFrame: 10,
+    /** Randomize the per-frame batch so the edge reads as a terminal, not a ramp. */
+    frameJitter: 0.4,
+    charColor: "#000000",
+    fontFamily: "monospace",
+  };
+
+  type Config = typeof CONFIG;
+
+  const DENSITY_RAMP = " .:-=+*#%@";
+
+  function buildPermutation(seed: number) {
+    let s = seed >>> 0;
+    function rand() {
+      s ^= s << 13;
+      s ^= s >>> 17;
+      s ^= s << 5;
+      s >>>= 0;
+      return s / 4294967295;
+    }
+    const p = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) p[i] = i;
+    for (let i = 255; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [p[i], p[j]] = [p[j], p[i]];
+    }
+    const perm = new Uint8Array(512);
+    for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
+    return perm;
+  }
+
+  function fade(t: number) {
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+
+  function lerp(t: number, a: number, b: number) {
+    return a + t * (b - a);
+  }
+
+  function grad(hash: number, x: number, y: number) {
+    const h = hash & 3;
+    const u = h < 2 ? x : y;
+    const v = h < 2 ? y : x;
+    return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+  }
+
+  function makeNoise2D(seed: number) {
+    const perm = buildPermutation(seed);
+    return function noise2D(x: number, y: number) {
+      const X = Math.floor(x) & 255;
+      const Y = Math.floor(y) & 255;
+      const xf = x - Math.floor(x);
+      const yf = y - Math.floor(y);
+      const u = fade(xf);
+      const v = fade(yf);
+      const aa = perm[perm[X] + Y];
+      const ab = perm[perm[X] + Y + 1];
+      const ba = perm[perm[X + 1] + Y];
+      const bb = perm[perm[X + 1] + Y + 1];
+      const x1 = lerp(u, grad(aa, xf, yf), grad(ba, xf - 1, yf));
+      const x2 = lerp(u, grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1));
+      return (lerp(v, x1, x2) + 1) / 2;
+    };
+  }
+
+  /** One randomized noise field. A sweep reveals a new field over the previous one. */
+  type Field = {
+    noise: (x: number, y: number) => number;
+    ox: number;
+    oy: number;
+    scale: number;
+  };
+
+  function makeField(baseScale: number): Field {
+    return {
+      noise: makeNoise2D((Math.random() * 0xffffffff) >>> 0),
+      ox: Math.random() * 1000,
+      oy: Math.random() * 1000,
+      scale: baseScale * (0.75 + Math.random() * 0.5),
+    };
+  }
+
+  class NoiseGrid {
+    private canvas: HTMLCanvasElement;
+    /** Measured instead of the canvas: the canvas is absolutely positioned and
+        resolves its own height from this element, so it can report a stale or
+        partial size on the first layout pass. */
+    private host: HTMLElement;
+    private ctx: CanvasRenderingContext2D;
+    private cfg: Config;
+
+    private cols = 0;
+    private rows = 0;
+    private cssW = 0;
+    private cssH = 0;
+
+    private values = new Float32Array(0);
+    private field: Field;
+    private next: Field | null = null;
+
+    private cursor = 0;
+    private sweepStartedAt = 0;
+    private sweepDurationMs = 0;
+    /** True once any sweep has fully completed. Gates the fast uncapped path. */
+    private firstSweepDone = false;
+    private raf = 0;
+    private wait: ReturnType<typeof setTimeout> | null = null;
+    private running = false;
+    private started = false;
+
+    private ro: ResizeObserver;
+    private io: IntersectionObserver | null = null;
+
+    constructor(canvas: HTMLCanvasElement, host: HTMLElement, config: Config) {
+      this.canvas = canvas;
+      this.host = host;
+      this.ctx = canvas.getContext("2d")!;
+      // Clone so we never mutate the shared module-level CONFIG.
+      this.cfg = { ...config };
+      this.field = makeField(this.cfg.noiseScale);
+
+      this.layout();
+
+      this.ro = new ResizeObserver(() => this.layout());
+      this.ro.observe(host);
+    }
+
+    private sample(f: Field, gx: number, gy: number) {
+      const raw = f.noise((gx + f.ox) * f.scale, (gy + f.oy) * f.scale);
+      const v = (raw - 0.5) * this.cfg.contrast + 0.5;
+      // Explicit NaN guard: a bad gx/gy used to fall through as 0, which maps to
+      // the space character and silently renders as an empty cell.
+      if (!(v >= 0)) return 0;
+      return v > 1 ? 1 : v;
+    }
+
+    private fillFrom(field: Field) {
+      if (this.cols <= 0) return;
+      for (let i = 0; i < this.values.length; i++) {
+        this.values[i] = this.sample(field, i % this.cols, (i / this.cols) | 0);
+      }
+    }
+
+    private layout() {
+      const rect = this.host.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const { cellSize, gap, charColor, fontFamily } = this.cfg;
+
+      const cols = Math.ceil(rect.width / cellSize);
+      const rows = Math.ceil(rect.height / cellSize);
+      const gridChanged = cols !== this.cols || rows !== this.rows;
+
+      this.cols = cols;
+      this.rows = rows;
+      this.cssW = rect.width;
+      this.cssH = rect.height;
+
+      // Assigning width/height clears the canvas and resets all context state.
+      this.canvas.width = Math.round(rect.width * dpr);
+      this.canvas.height = Math.round(rect.height * dpr);
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
+      this.ctx.fillStyle = charColor;
+      this.ctx.font = `${cellSize - gap}px ${fontFamily}`;
+
+      if (this.values.length !== cols * rows) {
+        this.values = new Float32Array(cols * rows);
+      }
+      // Always refill. Reallocating only on a size change let a first pass with a
+      // bad measurement leave the array empty with nothing to correct it later.
+      this.fillFrom(this.field);
+
+      if (gridChanged && this.running) this.beginSweep();
+
+      this.drawAll();
+    }
+
+    private drawCell(i: number) {
+      const { cellSize, gap } = this.cfg;
+      const size = cellSize - gap;
+      const gx = i % this.cols;
+      const gy = (i / this.cols) | 0;
+
+      // Clear the full cell pitch, not the inset content box: glyph ink can land
+      // outside the inset box and engines round those fractional edges differently.
+      this.ctx.clearRect(gx * cellSize, gy * cellSize, cellSize, cellSize);
+
+      const v = this.values[i];
+      const rank = Math.min(DENSITY_RAMP.length - 1, (v * DENSITY_RAMP.length) | 0);
+      const char = DENSITY_RAMP[rank];
+      if (char === " ") return;
+
+      const x = gx * cellSize + gap;
+      const y = gy * cellSize + gap;
+      this.ctx.fillText(char, x + size / 2, y + size / 2 + 1);
+    }
+
+    private drawAll() {
+      this.ctx.clearRect(0, 0, this.cssW, this.cssH);
+      const total = this.cols * this.rows;
+      const { cellSize, gap } = this.cfg;
+      const size = cellSize - gap;
+      for (let i = 0; i < total; i++) {
+        const v = this.values[i];
+        const rank = Math.min(DENSITY_RAMP.length - 1, (v * DENSITY_RAMP.length) | 0);
+        const char = DENSITY_RAMP[rank];
+        if (char === " ") continue;
+        const x = (i % this.cols) * cellSize + gap;
+        const y = ((i / this.cols) | 0) * cellSize + gap;
+        this.ctx.fillText(char, x + size / 2, y + size / 2 + 1);
+      }
+    }
+
+    start() {
+      if (this.running) return;
+      this.running = true;
+
+      if (!this.started) {
+        this.started = true;
+        // Give the base field one presented frame before the first sweep, so the
+        // sweep always runs over something rather than over nothing.
+        requestAnimationFrame(() => requestAnimationFrame(() => this.beginSweep()));
+        return;
+      }
+      this.beginSweep();
+    }
+
+    pause() {
+      this.running = false;
+      cancelAnimationFrame(this.raf);
+      if (this.wait) clearTimeout(this.wait);
+      this.wait = null;
+    }
+
+    private beginSweep() {
+      if (!this.running) return;
+      if (this.cols <= 0 || this.values.length === 0) return;
+      cancelAnimationFrame(this.raf);
+      this.next = makeField(this.cfg.noiseScale);
+      this.cursor = 0;
+      this.sweepStartedAt = performance.now();
+      this.sweepDurationMs = this.firstSweepDone
+        ? this.cfg.sweepDurationMs
+        : this.cfg.firstSweepDurationMs;
+      this.raf = requestAnimationFrame(this.tick);
+    }
+
+    private tick = (now: number) => {
+      if (!this.running || !this.next) return;
+
+      const total = this.cols * this.rows;
+      const msPerCell = this.sweepDurationMs / Math.max(1, total);
+      const elapsed = now - this.sweepStartedAt;
+      const scheduled = Math.min(total, Math.floor(elapsed / msPerCell));
+
+      let target: number;
+      if (this.firstSweepDone) {
+        // Normal sweep: capped and jittered for the chunky, incremental edge.
+        const jitter = 1 - this.cfg.frameJitter + Math.random() * this.cfg.frameJitter * 2;
+        const batch = Math.max(1, Math.round(this.cfg.maxCellsPerFrame * jitter));
+        target = Math.min(scheduled, this.cursor + batch);
+      } else {
+        // First sweep: uncapped, so it finishes in as few frames as the fast
+        // duration allows instead of visibly building cell by cell.
+        target = scheduled;
+      }
+
+      for (; this.cursor < target; this.cursor++) {
+        const i = this.cursor;
+        this.values[i] = this.sample(this.next, i % this.cols, (i / this.cols) | 0);
+        this.drawCell(i);
+      }
+
+      if (this.cursor >= total) {
+        this.field = this.next;
+        this.next = null;
+        this.firstSweepDone = true;
+        this.wait = setTimeout(() => this.beginSweep(), this.cfg.waitBetweenSweeps);
+        return;
+      }
+
+      this.raf = requestAnimationFrame(this.tick);
     };
 
-    const DENSITY_RAMP = " .:-=+*#%@";
-
-    function buildPermutation(seed: number) {
-        let s = seed >>> 0;
-        function rand() {
-            s ^= s << 13;
-            s ^= s >>> 17;
-            s ^= s << 5;
-            s >>>= 0;
-            return s / 4294967295;
-        }
-        const p = new Uint8Array(256);
-        for (let i = 0; i < 256; i++) p[i] = i;
-        for (let i = 255; i > 0; i--) {
-            const j = Math.floor(rand() * (i + 1));
-            [p[i], p[j]] = [p[j], p[i]];
-        }
-        const perm = new Uint8Array(512);
-        for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
-        return perm;
+    /** Pause while the hero is off screen; rAF already handles hidden tabs. */
+    observeVisibility(target: Element) {
+      this.io = new IntersectionObserver(
+        ([entry]) => (entry.isIntersecting ? this.start() : this.pause()),
+        { threshold: 0 }
+      );
+      this.io.observe(target);
     }
 
-    function fade(t: number) {
-        return t * t * t * (t * (t * 6 - 15) + 10);
+    destroy() {
+      this.pause();
+      this.ro.disconnect();
+      this.io?.disconnect();
     }
+  }
 
-    function lerp(t: number, a: number, b: number) {
-        return a + t * (b - a);
-    }
+  function initGrid() {
+    const canvas = document.querySelector<HTMLCanvasElement>("#hero-grid");
+    const section = document.querySelector<HTMLElement>("#hero-section");
+    if (!canvas || !section) return;
 
-    function grad(hash: number, x: number, y: number) {
-        const h = hash & 3;
-        const u = h < 2 ? x : y;
-        const v = h < 2 ? y : x;
-        return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
-    }
+    const grid = new NoiseGrid(canvas, section, CONFIG);
 
-    function makeNoise2D(seed: number) {
-        const perm = buildPermutation(seed);
-        return function noise2D(x: number, y: number) {
-            const X = Math.floor(x) & 255;
-            const Y = Math.floor(y) & 255;
-            const xf = x - Math.floor(x);
-            const yf = y - Math.floor(y);
-            const u = fade(xf);
-            const v = fade(yf);
-            const aa = perm[perm[X] + Y];
-            const ab = perm[perm[X] + Y + 1];
-            const ba = perm[perm[X + 1] + Y];
-            const bb = perm[perm[X + 1] + Y + 1];
-            const x1 = lerp(u, grad(aa, xf, yf), grad(ba, xf - 1, yf));
-            const x2 = lerp(u, grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1));
-            return (lerp(v, x1, x2) + 1) / 2;
-        };
-    }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!reduced.matches) grid.observeVisibility(section);
 
-    class NoiseGrid {
-        canvas: HTMLCanvasElement;
-        ctx: CanvasRenderingContext2D;
-        config: typeof CONFIG;
-        noise: (x: number, y: number) => number;
-        offsetX: number;
-        offsetY: number;
-        baseNoiseScale: number;
-        sweepTimer: ReturnType<typeof setTimeout> | null = null;
-        cellTimer: ReturnType<typeof setTimeout> | null = null;
-        cols = 0;
-        rows = 0;
-        _resizeTimer: ReturnType<typeof setTimeout> | undefined;
-
-        constructor(canvas: HTMLCanvasElement, config: typeof CONFIG) {
-            this.canvas = canvas;
-            this.ctx = canvas.getContext("2d")!;
-            this.config = config;
-            this.noise = makeNoise2D((Math.random() * 0xffffffff) >>> 0);
-            this.offsetX = Math.random() * 1000;
-            this.offsetY = Math.random() * 1000;
-            this.baseNoiseScale = config.noiseScale;
-            this.resize();
-            window.addEventListener("resize", () => this.debouncedResize());
-        }
-
-        debouncedResize() {
-            clearTimeout(this._resizeTimer);
-            this._resizeTimer = setTimeout(() => this.resize(), 150);
-        }
-
-        resize() {
-            const dpr = window.devicePixelRatio || 1;
-            const { cellSize, gap } = this.config;
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            this.cols = Math.ceil(w / cellSize);
-            this.rows = Math.ceil(h / cellSize);
-            const totalW = this.cols * cellSize + gap;
-            const totalH = this.rows * cellSize + gap;
-            this.canvas.width = totalW * dpr;
-            this.canvas.height = totalH * dpr;
-            this.canvas.style.width = `${totalW}px`;
-            this.canvas.style.height = `${totalH}px`;
-            this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            this.ctx.textAlign = "center";
-            this.ctx.textBaseline = "middle";
-            this.drawAll();
-        }
-
-        valueAt(gx: number, gy: number) {
-            const { noiseScale } = this.config;
-            return this.noise((gx + this.offsetX) * noiseScale, (gy + this.offsetY) * noiseScale);
-        }
-
-        drawCell(gx: number, gy: number) {
-            const { cellSize, gap, charColor, fontFamily } = this.config;
-            const ctx = this.ctx;
-            const v = this.valueAt(gx, gy);
-            const rank = Math.min(DENSITY_RAMP.length - 1, Math.floor(v * DENSITY_RAMP.length));
-            const char = DENSITY_RAMP[rank];
-            const contentSize = Math.max(1, cellSize - gap);
-            const offset = gap;
-            const x = gx * cellSize + offset;
-            const y = gy * cellSize + offset;
-            ctx.clearRect(x, y, contentSize, contentSize);
-            if (char === " ") return;
-            ctx.fillStyle = charColor;
-            ctx.font = `${contentSize}px ${fontFamily}`;
-            ctx.fillText(char, x + contentSize / 2, y + contentSize / 2 + 1);
-        }
-
-        drawAll() {
-            for (let gy = 0; gy < this.rows; gy++) {
-                for (let gx = 0; gx < this.cols; gx++) this.drawCell(gx, gy);
-            }
-        }
-
-        start() {
-            this.scheduleSweep();
-        }
-
-        scheduleSweep() {
-            clearTimeout(this.sweepTimer!);
-            this.sweepTimer = setTimeout(() => this.runSweep(), this.config.waitBetweenSweeps);
-        }
-
-        runSweep() {
-            this.noise = makeNoise2D((Math.random() * 0xffffffff) >>> 0);
-            this.offsetX = Math.random() * 1000;
-            this.offsetY = Math.random() * 1000;
-            this.config.noiseScale = this.baseNoiseScale * (0.75 + Math.random() * 0.5);
-
-            const total = this.cols * this.rows;
-            const msPerCell = this.config.msPerCell ?? this.config.sweepDurationMs / Math.max(1, total);
-
-            const MIN_TICK_MS = 4;
-            const cellsPerTick = Math.max(1, Math.ceil(MIN_TICK_MS / Math.max(msPerCell, 0.001)));
-            const tickDelay = msPerCell * cellsPerTick;
-
-            let i = 0;
-            const step = () => {
-                if (i >= total) {
-                    this.scheduleSweep();
-                    return;
-                }
-                const end = Math.min(total, i + cellsPerTick);
-                for (; i < end; i++) {
-                    const gx = i % this.cols;
-                    const gy = Math.floor(i / this.cols);
-                    this.drawCell(gx, gy);
-                }
-                this.cellTimer = setTimeout(step, tickDelay);
-            };
-            clearTimeout(this.cellTimer!);
-            step();
-        }
-    }
-
-    function initGrid() {
-        const canvas = document.querySelector<HTMLCanvasElement>("#hero-grid");
-        if (!canvas) return;
-        const grid = new NoiseGrid(canvas, CONFIG);
-        grid.start();
-    }
-
-    initGrid();
+    const cleanup = () => grid.destroy();
+    document.addEventListener("astro:before-swap", cleanup, { once: true });
+    window.addEventListener("pagehide", cleanup, { once: true });
 
     gsap.fromTo(
-        "#hero-text",
-        { opacity: 0 },
-        { opacity: 1, duration: 1, delay: 0.2, ease: "power1.out" }
+      "#hero-text",
+      { opacity: 0 },
+      { opacity: 1, duration: 1, delay: 0.2, ease: "power1.out" }
     );
+  }
+
+  initGrid();
 </script>

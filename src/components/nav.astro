@@ -54,8 +54,7 @@
   </div>
 </header>
 
-<style>
-</style>
+<style></style>
 
 <script>
   const keyMap: Record<string, string> = {
@@ -66,14 +65,14 @@
   };
   const navLinks = document.querySelectorAll<HTMLAnchorElement>("#site-nav ul a");
 
-  function setSelected (id: string) {
+  function setSelected(id: string) {
     navLinks.forEach((link) => {
       if (link.id === id) {
         link.classList.add("font-bold");
       } else {
         link.classList.remove("font-bold");
       }
-    })
+    });
   }
 
   navLinks.forEach((link) => {

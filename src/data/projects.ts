@@ -3,7 +3,7 @@ const PROJECTS = [
         name: "Corralon Artesan",
         stack: ["Next.js", "Tailwind CSS", "Vercel"],
         image: "/projects/corralon-artesan.png",
-        link: "https://corralon-artesan.com/",
+        link: "https://corralonartesan.com/",
     },
     {
         name: "Showboxd",

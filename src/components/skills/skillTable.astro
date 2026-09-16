@@ -14,20 +14,20 @@ import { Image } from "astro:assets";
 ---
 
 <section class="skill-table @container flex flex-col w-full">
-  <button type="button" class="skill-toggle flex w-full min-w-56 items-center justify-between pb-6" aria-expanded="false">
-    <div role="heading" aria-level="3" class="flex gap-2 items-center text-2xl font-normal font-pixel">
+  <button type="button" class="skill-toggle flex w-full items-center justify-between gap-2 pb-6" aria-expanded="false">
+    <div role="heading" aria-level="3" class="flex min-w-0 gap-2 items-center text-2xl font-normal font-pixel">
       <slot />
-      {title}
+      <span class="truncate">{title}</span>
     </div>
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="skill-chevron lucide lucide-chevron-up rotate-180"><path d="m18 15-6-6-6 6"></path></svg>
   </button>
 
   <div class="skill-list-wrapper overflow-hidden h-0">
-    <ul class="skill-list grid grid-cols-4 lg:grid-cols-6 lg:w-fit gap-3 place-items-baseline">
+    <ul class="skill-list grid grid-cols-3 min-[350px]:grid-cols-4 lg:grid-cols-6  gap-3 place-items-center sm:place-items-baseline">
       {
         skills.map((skill) => (
           <li class="flex flex-col items-center w-14 text-center gap-2.5 text-[0.625rem] font-medium">
-            <Image class="size-8.5 invert-100" src={skill.svg ? skill.svg : "/skills/nextjs.svg"} alt={"Logo de " + skill.name} width={16} height={16} />
+            <Image class="size-8.5 invert-100" src={skill.svg ? skill.svg : "/skills/nextjs.svg"} alt={"Logo de " + skill.name} width={16} height={16} loading="lazy" decoding="async" />
             {skill.name}
           </li>
         ))

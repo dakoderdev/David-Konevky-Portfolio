@@ -6,7 +6,7 @@ import TrashBin from "../components/miscellaneous-section/trashBin.astro";
 import ScatteredGrid from "../components/skills/scatteredGrid.astro";
 import SkillTable from "../components/skills/skillTable.astro";
 import DotIcon from "../components/skills/dotIcon.astro";
-import WorkGallery from "../components/work/workGallery.astro";
+import ProjectItem from "../components/work/projectItem.astro";
 
 import { MY_SKILLS } from "../data/skills";
 import PROJECTS from "../data/projects";
@@ -15,17 +15,17 @@ import PROJECTS from "../data/projects";
 <Layout>
   {/*<Intro />*/}
   <HeroSection />
-  <section data-nav-theme="light" class="grid sm:grid-cols-2 gap-4 place-items-center">
+  <section data-nav-theme="light" class="grid lg:grid-cols-2 gap-4 place-items-center">
     <div class="flex flex-col items-center px-4 py-8 sm:pl-12 w-full sm:py-37 gap-4.5">
       <h2 class="text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel w-full sm:min-h-31 font-medium text-balance"><span>Translating</span> <span>your ideas in</span> <span>20/20 vision</span></h2>
       <p class="text-[28px] leading-[1.15] tracking-tight w-full">I love to take a hands-on approach on everything that I do. My work is to build in relation to your needs, filtered through my point of view.</p>
     </div>
-    <div class="sm:h-full min-h-92 sm:min-h-auto w-full relative overflow-hidden">
+    <div class="lg:h-full min-h-92 md:min-h-64 lg:min-h-auto w-full relative overflow-hidden">
       <TrashBin />
     </div>
   </section>
-  <section data-nav-theme="dark" class="bg-black px-4 py-8 sm:px-12 w-full text-white sm:py-18">
-    <h2 class="text-5xl sm:text-[54px] leading-[1.15] tracking-tight text-center font-pixel w-full min-h-31 font-medium text-balance">My skills</h2>
+  <section data-nav-theme="dark" class="bg-black px-4 py-8 sm:px-12 w-full text-white sm:py-18 overflow-hidden">
+    <h2 class="text-5xl sm:text-[54px] leading-[1.15] tracking-tight text-center font-pixel w-full min-h-31 font-medium text-balance">My Skills</h2>
     <ScatteredGrid />
     <div class="grid md:grid-cols-2 items-start w-full pt-18 gap-y-8 gap-x-12 px-6">
       <SkillTable skills={MY_SKILLS.languages} title="Lenguajes"><DotIcon icon="lenguajes" /></SkillTable>
@@ -36,11 +36,17 @@ import PROJECTS from "../data/projects";
       <SkillTable skills={MY_SKILLS.infrastructure} title="Infraestructura"><DotIcon icon="infraestructura" /></SkillTable>
     </div>
   </section>
-  <section id="work-section" data-nav-theme="light" class="relative bg-white px-4 py-8 sm:px-12 w-full sm:py-18">
-    <h2 class="text-center pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">My work</h2>
+  <section id="work-section" data-nav-theme="light" class="relative bg-white px-2 py-8 sm:px-12 w-full sm:py-18">
+    <h2 class="text-center pb-12 sm:pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">My Work</h2>
+    <div class="flex flex-col gap-8 sm:gap-24 md:px-12">
+      {PROJECTS.map((project) => <ProjectItem project={project} />)}
+    </div>
   </section>
-  <section>
-
+  <section id="blog-section"  class="grid lg:grid-cols-3 gap-4 place-items-center">
+    <div class="flex flex-col lg:col-span-2 max-w-3xl px-4 py-8 sm:pl-12 w-full sm:py-18 gap-4.5">
+      <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want to learn more about the making-of:</h2>
+      <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>
+    </div>
   </section>
 </Layout>
 
@@ -51,7 +57,7 @@ import PROJECTS from "../data/projects";
 
   gsap.registerPlugin(SplitText, ScrollTrigger);
 
-  function typewriter(header : HTMLElement) {
+  function typewriter(header: HTMLElement) {
     const split = SplitText.create(header, { type: "chars" });
     header.style.willChange = "contents";
 
@@ -84,7 +90,7 @@ import PROJECTS from "../data/projects";
         char,
         {
           autoAlpha: 1,
-          duration: 0.01,
+          duration: 0.02,
           onStart: () => char.after(cursor),
         },
         `+=${gsap.utils.random(0.015, 0.06)}`,

@@ -202,13 +202,20 @@
     const engine = Engine.create();
     engine.gravity.y = CONFIG.gravityY;
 
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    let width = container.clientWidth;
+    let height = container.clientHeight;
 
     const { wallThickness } = CONFIG;
-    const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width * 4, wallThickness, { isStatic: true });
-    const leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
-    const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
+
+    function makeWalls(w: number, h: number) {
+      return {
+        ground: Bodies.rectangle(w / 2, h + wallThickness / 2, w * 4, wallThickness, { isStatic: true }),
+        leftWall: Bodies.rectangle(-wallThickness / 2, h / 2, wallThickness, h * 4, { isStatic: true }),
+        rightWall: Bodies.rectangle(w + wallThickness / 2, h / 2, wallThickness, h * 4, { isStatic: true }),
+      };
+    }
+
+    let { ground, leftWall, rightWall } = makeWalls(width, height);
     Composite.add(engine.world, [ground, leftWall, rightWall]);
 
     const runner = Runner.create();
@@ -277,6 +284,44 @@
       requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
+
+    // ---- resize handling ----
+    // Reposition the static walls in place rather than tearing down/rebuilding
+    // the engine, so existing bodies keep their velocity/state (no physics reset).
+    let resizeTimer: number | null = null;
+
+    function applyResize() {
+      const newWidth = container!.clientWidth;
+      const newHeight = container!.clientHeight;
+      if (newWidth === width && newHeight === height) return;
+      width = newWidth;
+      height = newHeight;
+
+      Body.setPosition(ground, { x: width / 2, y: height + wallThickness / 2 });
+      Body.setPosition(leftWall, { x: -wallThickness / 2, y: height / 2 });
+      Body.setPosition(rightWall, { x: width + wallThickness / 2, y: height / 2 });
+
+      // nudge any icon that's now outside the new bounds back inside so it
+      // doesn't get stuck clipping through a wall that moved past it
+      for (const { body, w, h } of iconBodies) {
+        const minX = w / 2;
+        const maxX = width - w / 2;
+        if (body.position.x < minX || body.position.x > maxX) {
+          Body.setPosition(body, {
+            x: Math.min(Math.max(body.position.x, minX), maxX),
+            y: body.position.y,
+          });
+        }
+      }
+    }
+
+    function onResize() {
+      if (resizeTimer !== null) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(applyResize, 150);
+    }
+
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(container);
   }
 
   function setup() {

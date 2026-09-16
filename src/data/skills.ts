@@ -115,6 +115,10 @@ const SKILLS = {
         name: "Jira",
         svg: "/skills/jira.svg",
     },
+    express: {
+        name: "Express.js",
+        svg: "/skills/express.svg",
+    }
 };
 
 const MY_SKILLS = {
@@ -131,6 +135,7 @@ const MY_SKILLS = {
         SKILLS.nextjs,
         SKILLS.astro,
         SKILLS.vue,
+        SKILLS.express,
     ],
 
     libraries: [

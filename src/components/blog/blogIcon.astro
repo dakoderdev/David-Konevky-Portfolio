@@ -28,17 +28,22 @@ interface Props {
    * Everything in between is picked randomly from `weights`.
    */
   extremeRatio?: number;
+  /** How many alternate layouts to precompute and crossfade between client-side. */
+  variantCount?: number;
+  /** Seconds between crossfades. */
+  cycleSeconds?: number;
 }
 
 const {
   rows = 44,
   cols = 42,
-  class: className = "h-100",
-  gapRatio = 0.08,
+  gapRatio = 0.075,
   weights = {},
   seed,
   image = "/map/hell-yeah.png",
-  extremeRatio = 0.95,
+  extremeRatio = 0.90,
+  variantCount = 4,
+  cycleSeconds = 1,
 } = Astro.props;
 
 const { square = 0.05, ringCircle = 0.32, fullCircle = 0.16 } = weights;
@@ -54,17 +59,17 @@ function mulberry32(a: number) {
   };
 }
 
-const random = seed !== undefined ? mulberry32(seed) : Math.random;
-
 type CellType = "square" | "ringCircle" | "fullCircle" | "empty";
 
 const totalDarkWeight = square + ringCircle + fullCircle;
 
-function pickDarkCellType(): CellType {
-  let r = random() * totalDarkWeight;
-  if ((r -= square) < 0) return "square";
-  if ((r -= ringCircle) < 0) return "ringCircle";
-  return "fullCircle";
+function makePickDarkCellType(random: () => number) {
+  return function pickDarkCellType(): CellType {
+    let r = random() * totalDarkWeight;
+    if ((r -= square) < 0) return "square";
+    if ((r -= ringCircle) < 0) return "ringCircle";
+    return "fullCircle";
+  };
 }
 
 const gap = gapRatio;
@@ -107,61 +112,136 @@ function sampleLuminance(row: number, col: number): number {
 const hybridDarkCutoff = 255 * (1 - extremeRatio);
 const hybridLightCutoff = 255 * extremeRatio;
 
-function pickHybridCellType(luminance: number): CellType {
-  if (luminance <= hybridDarkCutoff) return "square";
-  if (luminance >= hybridLightCutoff) return "empty";
-  return pickDarkCellType();
-}
-
-const cells: { type: CellType; row: number; col: number }[] = [];
+// Precompute the luminance-derived "extreme" outcome (always square/empty)
+// once, since it doesn't depend on randomness and is shared by every variant.
+const luminances: number[] = [];
 for (let row = 0; row < rows; row++) {
   for (let col = 0; col < cols; col++) {
-    const luminance = sampleLuminance(row, col);
-    cells.push({ type: pickHybridCellType(luminance), row, col });
+    luminances.push(sampleLuminance(row, col));
   }
 }
+
+function buildVariant(random: () => number) {
+  const pickDarkCellType = makePickDarkCellType(random);
+  const cells: { type: CellType; row: number; col: number }[] = [];
+  let i = 0;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const luminance = luminances[i++];
+      let type: CellType;
+      if (luminance <= hybridDarkCutoff) type = "square";
+      else if (luminance >= hybridLightCutoff) type = "empty";
+      else type = pickDarkCellType();
+      cells.push({ type, row, col });
+    }
+  }
+  return cells;
+}
+
+const variants = Array.from({ length: Math.max(1, variantCount) }, (_, i) =>
+  buildVariant(seed !== undefined ? mulberry32(seed + i) : Math.random)
+);
 ---
 
-<svg
-  class={className}
-  viewBox={`0 0 ${cols} ${rows}`}
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
+<div class="blog-icon-wrap h-101.5" data-cycle-seconds={cycleSeconds}>
   {
-    cells.map(({ type, row, col }) => {
-      const cx = col + 0.5;
-      const cy = row + 0.5;
+    variants.map((cells, variantIndex) => (
+      <svg
+        class="blog-icon h-101.5"
+        data-variant={variantIndex}
+        style={{ opacity: variantIndex === 0 ? 1 : 0 }}
+        viewBox={`0 0 ${cols} ${rows}`}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {cells.map(({ type, row, col }) => {
+          const cx = col + 0.5;
+          const cy = row + 0.5;
 
-      if (type === "square") {
-        return (
-          <rect
-            x={col + inset}
-            y={row + inset}
-            width={cellSize}
-            height={cellSize}
-            fill="black"
-          />
-        );
-      }
+          if (type === "square") {
+            return (
+              <rect
+                x={col + inset}
+                y={row + inset}
+                width={cellSize}
+                height={cellSize}
+                fill="black"
+              />
+            );
+          }
 
-      if (type === "ringCircle") {
-        return (
-          <circle
-            cx={cx}
-            cy={cy}
-            r={cellSize * 0.395}
-            stroke="black"
-            stroke-width={cellSize * 0.2}
-          />
-        );
-      }
+          if (type === "ringCircle") {
+            return (
+              <circle
+                cx={cx}
+                cy={cy}
+                r={cellSize * 0.395}
+                stroke="black"
+                stroke-width={cellSize * 0.2}
+              />
+            );
+          }
 
-      if (type === "fullCircle") {
-        return <circle cx={cx} cy={cy} r={cellSize / 2} fill="black" />;
-      }
+          if (type === "fullCircle") {
+            return <circle cx={cx} cy={cy} r={cellSize / 2} fill="black" />;
+          }
 
-      return null;
-    })
+          return null;
+        })}
+      </svg>
+    ))
   }
-</svg>
+</div>
+
+<style>
+  .blog-icon-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .blog-icon-wrap .blog-icon:not(:first-child) {
+    position: absolute;
+    inset: 0;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.querySelectorAll<HTMLElement>(".blog-icon-wrap").forEach((wrap) => {
+    gsap.fromTo(
+      wrap,
+      { rotate: 0 },
+      {
+        rotate: 6,
+        duration: 2,
+        delay: 0.4,
+        scrollTrigger: {
+          trigger: wrap,
+          start: "top 85%",
+          once: true,
+        },
+      }
+    );
+
+    const variants = Array.from(wrap.querySelectorAll<SVGElement>(".blog-icon"));
+    if (variants.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const cycleSeconds = Number(wrap.dataset.cycleSeconds) || 2.5;
+    let current = 0;
+
+    const advance = () => {
+      const next = (current + 1) % variants.length;
+      gsap.set(variants[current], { opacity: 0 });
+      gsap.set(variants[next], { opacity: 1 });
+      current = next;
+      gsap.delayedCall(cycleSeconds, advance);
+    };
+
+    gsap.delayedCall(cycleSeconds, advance);
+  });
+</script>

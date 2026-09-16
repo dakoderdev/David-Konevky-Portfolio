@@ -37,13 +37,13 @@ import PROJECTS from "../data/projects";
       <SkillTable skills={MY_SKILLS.infrastructure} title="Infraestructura"><DotIcon icon="infraestructura" /></SkillTable>
     </div>
   </section>
-  <section id="work-section" data-nav-theme="light" class="relative bg-white px-2 py-8 sm:px-12 w-full sm:py-18">
+  <section data-nav-theme="light" id="work-section" data-nav-theme="light" class="relative bg-white px-2 py-8 sm:px-12 w-full sm:py-18">
     <h2 class="text-center pb-12 sm:pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">My Work</h2>
     <div class="flex flex-col gap-8 sm:gap-24 md:px-12">
       {PROJECTS.map((project) => <ProjectItem project={project} />)}
     </div>
   </section>
-  <section id="blog-section" class="flex flex-col gap-18 px-4 py-8 sm:px-12 sm:pt-24 sm:pb-37">
+  <section data-nav-theme="light" id="blog-section" class="flex flex-col gap-18 px-4 py-8 sm:px-12 sm:pt-24 sm:pb-37">
     <div class="flex flex-col justify-between lg:flex-row items-center">
       <div class="flex flex-col max-w-2xl gap-4.5">
         <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want to learn more about the making-of:</h2>

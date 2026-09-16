@@ -1,0 +1,167 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import { PNG } from "pngjs";
+
+interface Weights {
+  square?: number;
+  ringCircle?: number;
+  fullCircle?: number;
+}
+
+interface Props {
+  rows?: number;
+  cols?: number;
+  class?: string;
+  /** Gap between cells, as a fraction of a single cell's size (e.g. 0.0005 = 0.05%). */
+  gapRatio?: number;
+  /** Relative weights for the three "dark" cell types. Don't need to sum to 1. */
+  weights?: Weights;
+  /** Optional seed for a reproducible layout; omit for a random one each render. */
+  seed?: number;
+  /** Path (relative to /public) to the image the grid maps its cells onto. */
+  image?: string;
+  /**
+   * Fraction (0-1) of the luminance range treated as "extreme": a pixel
+   * darker than 255 * (1 - extremeRatio) always becomes a solid square,
+   * a pixel lighter than 255 * extremeRatio always becomes empty.
+   * Everything in between is picked randomly from `weights`.
+   */
+  extremeRatio?: number;
+}
+
+const {
+  rows = 44,
+  cols = 42,
+  class: className = "h-100",
+  gapRatio = 0.08,
+  weights = {},
+  seed,
+  image = "/map/hell-yeah.png",
+  extremeRatio = 0.95,
+} = Astro.props;
+
+const { square = 0.05, ringCircle = 0.32, fullCircle = 0.16 } = weights;
+
+// mulberry32 PRNG, used only when a seed is provided so the layout can be reproducible.
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const random = seed !== undefined ? mulberry32(seed) : Math.random;
+
+type CellType = "square" | "ringCircle" | "fullCircle" | "empty";
+
+const totalDarkWeight = square + ringCircle + fullCircle;
+
+function pickDarkCellType(): CellType {
+  let r = random() * totalDarkWeight;
+  if ((r -= square) < 0) return "square";
+  if ((r -= ringCircle) < 0) return "ringCircle";
+  return "fullCircle";
+}
+
+const gap = gapRatio;
+const cellSize = 1 - gap;
+const inset = gap / 2;
+
+// Sample the source image on a rows x cols grid: dark pixels become one of the
+// three "ink" cell types, white/light pixels become empty cells.
+const imagePath = path.join(process.cwd(), "public", image);
+const png = PNG.sync.read(fs.readFileSync(imagePath));
+
+function sampleLuminance(row: number, col: number): number {
+  const x0 = Math.floor((col / cols) * png.width);
+  const x1 = Math.max(x0 + 1, Math.floor(((col + 1) / cols) * png.width));
+  const y0 = Math.floor((row / rows) * png.height);
+  const y1 = Math.max(y0 + 1, Math.floor(((row + 1) / rows) * png.height));
+
+  let total = 0;
+  let count = 0;
+  for (let y = y0; y < y1; y++) {
+    for (let x = x0; x < x1; x++) {
+      const idx = (png.width * y + x) << 2;
+      const r = png.data[idx];
+      const g = png.data[idx + 1];
+      const b = png.data[idx + 2];
+      const a = png.data[idx + 3];
+      // Treat transparent pixels as white/background.
+      const luminance = a === 0 ? 255 : 0.299 * r + 0.587 * g + 0.114 * b;
+      total += luminance;
+      count++;
+    }
+  }
+
+  return count > 0 ? total / count : 255;
+}
+
+// Luminance in the darkest/lightest `extremeRatio` fraction of the range is
+// forced to a solid square / empty cell; everything in between is picked
+// randomly from `weights`.
+const hybridDarkCutoff = 255 * (1 - extremeRatio);
+const hybridLightCutoff = 255 * extremeRatio;
+
+function pickHybridCellType(luminance: number): CellType {
+  if (luminance <= hybridDarkCutoff) return "square";
+  if (luminance >= hybridLightCutoff) return "empty";
+  return pickDarkCellType();
+}
+
+const cells: { type: CellType; row: number; col: number }[] = [];
+for (let row = 0; row < rows; row++) {
+  for (let col = 0; col < cols; col++) {
+    const luminance = sampleLuminance(row, col);
+    cells.push({ type: pickHybridCellType(luminance), row, col });
+  }
+}
+---
+
+<svg
+  class={className}
+  viewBox={`0 0 ${cols} ${rows}`}
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {
+    cells.map(({ type, row, col }) => {
+      const cx = col + 0.5;
+      const cy = row + 0.5;
+
+      if (type === "square") {
+        return (
+          <rect
+            x={col + inset}
+            y={row + inset}
+            width={cellSize}
+            height={cellSize}
+            fill="black"
+          />
+        );
+      }
+
+      if (type === "ringCircle") {
+        return (
+          <circle
+            cx={cx}
+            cy={cy}
+            r={cellSize * 0.395}
+            stroke="black"
+            stroke-width={cellSize * 0.2}
+          />
+        );
+      }
+
+      if (type === "fullCircle") {
+        return <circle cx={cx} cy={cy} r={cellSize / 2} fill="black" />;
+      }
+
+      return null;
+    })
+  }
+</svg>

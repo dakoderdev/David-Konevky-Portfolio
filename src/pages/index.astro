@@ -7,6 +7,7 @@ import ScatteredGrid from "../components/skills/scatteredGrid.astro";
 import SkillTable from "../components/skills/skillTable.astro";
 import DotIcon from "../components/skills/dotIcon.astro";
 import ProjectItem from "../components/work/projectItem.astro";
+import BlogIcon from "../components/blog/blogIcon.astro";
 
 import { MY_SKILLS } from "../data/skills";
 import PROJECTS from "../data/projects";
@@ -42,11 +43,12 @@ import PROJECTS from "../data/projects";
       {PROJECTS.map((project) => <ProjectItem project={project} />)}
     </div>
   </section>
-  <section id="blog-section"  class="grid lg:grid-cols-3 gap-4 place-items-center">
-    <div class="flex flex-col lg:col-span-2 max-w-3xl px-4 py-8 sm:pl-12 w-full sm:py-18 gap-4.5">
+  <section id="blog-section" class="flex flex-col justify-between lg:flex-row items-center px-4 py-8 sm:p-12  sm:py-18 ">
+    <div class="flex flex-col max-w-2xl gap-4.5">
       <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want to learn more about the making-of:</h2>
-      <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>
+      <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>   
     </div>
+    <BlogIcon />
   </section>
 </Layout>
 

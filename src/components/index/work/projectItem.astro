@@ -34,7 +34,7 @@ const shortenedUrl = project.link.split("/")[2];
     <span class="project-link -mt-3 sm:m-0 font-pixel text-sm md:text-xl tracking-tight opacity-60 transition-colors">{shortenedUrl}</span>
   </div>
   <div class="project-image__container -mt-1.5 sm:mt-0 relative aspect-video w-full origin-top-right overflow-visible">
-    <Image class="project-image top-0 right-0 absolute w-full h-full object-cover " src={project.image} alt={"Sitio web de " + project.name} height={770} width={1080} loading="lazy" decoding="async" />
+    <Image class="project-image top-0 right-0 absolute w-full h-full object-cover " src={project.image} alt={"Website of " + project.name} height={770} width={1080} loading="lazy" decoding="async" />
     <div class="absolute bottom-0 right-0 sm:bottom-2 sm:right-2 flex p-1.5 pr-0 pb-0 sm:p-1.5 gap-0.5 bg-white">
       <ul class="flex flex-wrap h-6 sm:h-6.5 gap-0.5">
         {project.stack.map((item) => <li class="px-1.5 sm:px-2 sm:hover:px-2.5 flex items-center text-xs bg-black text-white font-medium">{item}</li>)}

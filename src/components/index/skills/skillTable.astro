@@ -27,7 +27,7 @@ import { Image } from "astro:assets";
       {
         skills.map((skill) => (
           <li class="flex flex-col items-center w-14 text-center gap-2.5 text-[0.625rem] font-medium">
-            <Image class="size-8.5 invert-100" src={skill.svg ? skill.svg : "/skills/nextjs.svg"} alt={"Logo de " + skill.name} width={16} height={16} loading="lazy" decoding="async" />
+            <Image class="size-8.5 invert-100" src={skill.svg ? skill.svg : "/skills/nextjs.svg"} alt={"Logo of " + skill.name} width={16} height={16} loading="lazy" decoding="async" />
             {skill.name}
           </li>
         ))

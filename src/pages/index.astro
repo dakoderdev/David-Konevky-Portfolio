@@ -7,6 +7,7 @@ import SkillTable from "../components/index/skills/skillTable.astro";
 import DotIcon from "../components/index/skills/dotIcon.astro";
 import ProjectItem from "../components/index/work/projectItem.astro";
 import BlogIcon from "../components/index/blog/blogIcon.astro";
+import EducationSection from "../components/index/education/educationSection.astro";
 
 import { Image } from "astro:assets";
 
@@ -34,12 +35,12 @@ const postsRecent = (await getCollection("blog")).sort(
     <h2 class="text-5xl sm:text-[54px] leading-[1.15] tracking-tight text-center font-pixel w-full min-h-31 font-medium text-balance">My Skills</h2>
     <ScatteredGrid />
     <div class="grid md:grid-cols-2 items-start w-full pt-18 gap-y-8 gap-x-12 px-6">
-      <SkillTable skills={MY_SKILLS.languages} title="Lenguajes"><DotIcon icon="lenguajes" /></SkillTable>
+      <SkillTable skills={MY_SKILLS.languages} title="Languages"><DotIcon icon="lenguajes" /></SkillTable>
       <SkillTable skills={MY_SKILLS.frameworks} title="Frameworks"><DotIcon icon="frameworks" /></SkillTable>
       <SkillTable skills={MY_SKILLS.backend} title="Back-end"><DotIcon icon="backend" /></SkillTable>
-      <SkillTable skills={MY_SKILLS.design} title="Diseño"><DotIcon icon="diseno" /></SkillTable>
-      <SkillTable skills={MY_SKILLS.libraries} title="Librerias"><DotIcon icon="librerias" /></SkillTable>
-      <SkillTable skills={MY_SKILLS.infrastructure} title="Infraestructura"><DotIcon icon="infraestructura" /></SkillTable>
+      <SkillTable skills={MY_SKILLS.design} title="Design"><DotIcon icon="diseno" /></SkillTable>
+      <SkillTable skills={MY_SKILLS.libraries} title="Libraries"><DotIcon icon="librerias" /></SkillTable>
+      <SkillTable skills={MY_SKILLS.infrastructure} title="Infrastructure"><DotIcon icon="infraestructura" /></SkillTable>
     </div>
   </section>
   <section data-nav-theme="light" id="work-section" data-nav-theme="light" class="relative bg-white px-4 py-8 sm:px-12 w-full sm:py-18">
@@ -48,15 +49,14 @@ const postsRecent = (await getCollection("blog")).sort(
       {PROJECTS.map((project) => <ProjectItem project={project} />)}
     </div>
   </section>
-  <section data-nav-theme="dark" class="bg-black px-4 py-8 sm:px-12 w-full text-white sm:py-18 overflow-hidden">
-      <h2 class="text-center pb-12 sm:pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">Some facts about me</h2>
-
-  </section>
+  <EducationSection />
   <section data-nav-theme="light" class="flex flex-col gap-3 px-4 py-8 overflow-hidden sm:px-12 sm:pt-24 sm:pb-37">
     <div class="flex flex-col justify-between lg:flex-row pb-18 items-center">
       <div class="flex flex-col max-w-2xl gap-4.5 pb-15">
         <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want <span>to learn more </span> <span>about</span> <span>the making-of:</span></h2>
-        <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>   
+        <div class="flex">
+          <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>   
+        </div>
       </div>
       <BlogIcon />
     </div>
@@ -72,7 +72,7 @@ const postsRecent = (await getCollection("blog")).sort(
             ))}
         </ul>
     <a href="/blog" class="bg-black/20 font-medium text-sm w-fit py-2 px-6 mx-auto">
-      Ver Mas
+      See More
     </a>
   </section>
 </Layout>

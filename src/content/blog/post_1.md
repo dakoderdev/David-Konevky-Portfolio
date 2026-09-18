@@ -40,7 +40,7 @@ One of my first ideas for where to get inspiration was actually [neocities.org](
 The first one was the most unconventional one, it was an attempt to recreate the "Project DIVA" UI with my own twist (the twist being a different background, boring text, and no Miku, so essentially a downgrade). It's funny because you _really_ just have to trust your gut, sometimes an idea can feel amazing for two seconds but at some point your mind subconsciously realizes there's not much more to mine out of it, yet it didn't stop me from trying. I probably should've gone back to the drawing board and reflect before trying to keep improving it, there were a lot of points where I knew it wasn't working out but I was just stalling and trying to force it.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_1.png" alt="Picture of Project DIVA concept">
+  <img src="/blog/post_1/image_1.webp" alt="Picture of Project DIVA concept">
   <figcaption>Picture of how the repository last looked before getting scrapped, mind you this is the most minimalist background out of all.</figcaption>
 </figure>
 
@@ -48,7 +48,7 @@ Looking back, I feel like it was too busy, too dorky, and was too unconventional
 
 
 <figure>
-  <img src="/src/assets/images/post_1/image_2.png" alt="Concept for the background">
+  <img src="/blog/post_1/image_2.webp" alt="Concept for the background">
   <figcaption>One of the concepts I had for the background, it was taken directly from project DIVA with some effects on top, so it was mostly proof of concept.</figcaption>
 </figure>
 
@@ -57,14 +57,14 @@ Looking back, I feel like it was too busy, too dorky, and was too unconventional
 This one was very short-lived, which in this case, was a good thing. A lot of the influence for what I wanted to do with this iteration came from the idea of making a website that felt almost "analog". Center around bringing texture to the forefront and making stuff look "handcrafted". I thought it would be a nice poetic way to contrast off of the cold nature of most websites and content right now in the age of AI.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_4.png" alt="Moodboard for this iteration of the portfolio">
+  <img src="/blog/post_1/image_4.webp" alt="Moodboard for this iteration of the portfolio">
   <figcaption>General moodboard for what I was aiming for. You can see the emphasis on making stuff hand-drawn, far removed from what's popular in web design nowadays</figcaption>
 </figure>
 
 Bringing this very conceptual idea to a computer screen needs a lot of specific skills I don't really have. I wasn't really willing to learn about mixed-media projects just for a portfolio either, and most importantly, it would be kind of disingenuous, because most of my training and skills are not based on these types of websites.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_3.png" alt="Figma screen with a bunch of handrawn logo iterations">
+  <img src="/blog/post_1/image_3.webp" alt="Figma screen with a bunch of handrawn logo iterations">
   <figcaption>I was playing around with changing my logo for this version, and it came out very nicely but in the end I felt like this aestethic didn't align with my style</figcaption>
 </figure>
 
@@ -75,14 +75,14 @@ When I realized that the second attempt was not really working out, I dropped th
 I started to think about aestethics less like a shell you put on top of a website, and more so a reflection of what the website is trying to communicate. So on my initial board, I didn't put any pictures up, instead I put key words I wanted the website to communicate, and then slowly over time I made a collection of pictures and references that represented the feeling I wanted the portfolio to have.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_5b.png" alt="Figjam board with a bunch of adjectives">
+  <img src="/blog/post_1/image_5b.webp" alt="Figjam board with a bunch of adjectives">
   <figcaption>You can see here the words that captured the essence of what I wanted visitors to think of me based on my website</figcaption>
 </figure>
 
 I then, started to look for thematic references, that aligned with these words. These references included everything from musical rollouts, product branding, operating systems, etc. Stuff that in some way shape or form connected to one or more words on the board and brought up similar feelings. The important thing was that *all* of these references needed to have some sort of connection with the spirit of the project, anything that was just there for the vibes needed to be discarded.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_6.png" alt="Pinterest board with all my references including black and white minimalist pictures, photos of celebrities, the daisy chain tour, among others">
+  <img src="/blog/post_1/image_6.webp" alt="Pinterest board with all my references including black and white minimalist pictures, photos of celebrities, the daisy chain tour, among others">
   <figcaption>Pinterest board with all my aestethic/thematic references including black and white minimalist pictures, photos of celebrities, video game and phone operating systems, among others</figcaption>
 </figure>
 
@@ -93,7 +93,7 @@ But I think I sort of went a little too literal with the iOS inspiration for the
 There was also a secondary motif that I wanted to represent on this version of the portfolio, and you'll see it pop up a little with the upcoming project too. It was this idea of cultural osmosis, of how big of a role others have on our own personal style, and I wanted to find a way to somehow highlight and put my references front and center instead of hiding them. Highlighting the fact that I'm a "student of the world" in a sense, taking bits and pieces out of everything that interests me and turning it into something new.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_9.png" alt="Home screen mock-up with an iPhone at the center with my name, and a bunch of images surrounding it, almost like a board of references">
+  <img src="/blog/post_1/image_9.webp" alt="Home screen mock-up with an iPhone at the center with my name, and a bunch of images surrounding it, almost like a board of references">
   <figcaption>This was a mock-up where I was trying to figure out how it would look like if I were to put my references "on display" on the home screen.</figcaption>
 </figure>
 
@@ -104,7 +104,7 @@ At this point, I decided I wanted to play with code again, because I had spent a
 I started coding this idea on a playground repository where I could toy with it. First I told the AI to give me the rough algorithm to make it work, and then I started manipulating the configurations, changing the way the heat map looked. Whether it was the shape, the size, the blurryness (or lack thereof), the speed, until I got to the most satisfying version...
 
 <figure>
-  <img src="/src/assets/images/post_1/image_7.png" alt="A heat map in the form of a heart-shape on top of a black and white website">
+  <img src="/blog/post_1/image_7.webp" alt="A heat map in the form of a heart-shape on top of a black and white website">
   <figcaption>Me goofing around with the heatmap test</figcaption>
 </figure>
 
@@ -119,7 +119,7 @@ And that's when an idea struck to me: "What if I did this lo-fi screen, with a p
 But then I tried with ascii, and that's when I knew, this is _exactly_ where I wanted to go. It was the combinations of all the things I wanted. It was quirky yet sophisticated. It harkens back to old technology but translated to modern design. It's something that an AI wouldn't think of by itself when tasked to do a portfolio. It was a natural conclusion to the long winded quest I went throughout all these different projects.
 
 <figure>
-  <img src="/src/assets/images/post_1/image_8.png" alt="First concept of the home screen, almost the same as it is right now">
+  <img src="/blog/post_1/image_8.webp" alt="First concept of the home screen, almost the same as it is right now">
   <figcaption>Finalized concept of the home screen, almost the same as it currently is right now</figcaption>
 </figure>
 

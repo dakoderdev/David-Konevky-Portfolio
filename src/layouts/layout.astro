@@ -7,14 +7,33 @@ import Footer from "../components/footer.astro";
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="author" content="David Konevky" />
+		<meta name="description" content="Desarrollador web, UX/UI, Programación" />
+
 		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png" />
+		<link rel="apple-touch-icon" href="/favicon.png" />
+		<meta name="theme-color" content="#0000ff" />
+
+		<!-- Open Graph -->
+		<meta property="og:title" content="David Konevky | Design Engineer" />
+		<meta property="og:description" content="Design engineer. I build interfaces and experiences for the modern web." />
+		<meta property="og:url" content="https://david-konevky-porfolio.vercel.app/" />
+		<meta property="og:type" content="website" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="David Konevky | Design Engineer" />
+		<meta name="twitter:description" content="Design engineer. I build interfaces and experiences for the modern web." />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Doto:wght,ROND@900,100&family=Geist+Pixel&family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>David Konevky | Portfolio</title>
+
+		<title>David Konevky - Portfolio | Design Engineer</title>
 		<style>
 			h1 {
 				opacity: 0;

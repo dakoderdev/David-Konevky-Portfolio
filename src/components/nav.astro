@@ -1,18 +1,25 @@
+---
+const isBlogPage = Astro.url.pathname.startsWith("/blog");
+---
+
 <header class="font-pixel">
   <nav id="site-nav" class="fixed z-990 top-0 sm:bottom-5 inset-x-0 sm:inset-auto sm:w-auto sm:left-1/2 sm:-translate-x-1/2 bg-white/85 backdrop-blur-xs shadow-lg shadow-black/4 sm:shadow-black/6 p-3 flex justify-between items-center gap-3 transition-colors duration-300">
-    <svg id="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 78" class="h-4 w-auto fill-black transition-colors duration-300" data-astro-cid-l3rxwkef=""> <path d="m116.87,39.08C116.87,17.59,99.48.16,78,.09h0S0,.08,0,.08v78h78c21.48-.07,38.87-17.51,38.87-39Z" data-astro-cid-l3rxwkef=""></path> <rect x="117" width="39" height="78" data-astro-cid-l3rxwkef=""></rect> <polygon points="234 0 195 0 156 39 195 78 234 78 195 39 234 0" data-astro-cid-l3rxwkef=""></polygon> </svg>
+    <a href="/">
+          <svg id="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 78" class="h-4 w-auto fill-black transition-colors duration-300" data-astro-cid-l3rxwkef=""> <path d="m116.87,39.08C116.87,17.59,99.48.16,78,.09h0S0,.08,0,.08v78h78c21.48-.07,38.87-17.51,38.87-39Z" data-astro-cid-l3rxwkef=""></path> <rect x="117" width="39" height="78" data-astro-cid-l3rxwkef=""></rect> <polygon points="234 0 195 0 156 39 195 78 234 78 195 39 234 0" data-astro-cid-l3rxwkef=""></polygon> </svg>
+
+    </a>
     <ul class="flex relative">
       <li>
-        <a id="home" href="/#hero-section" class="py-1 px-3 text-nowrap flex gap-1 items-center font-bold"><kbd class="font-pixel hidden md:inline-block">[H]</kbd> Home</a>
+        <a id="home" href="/#hero-section" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center", { "font-bold": !isBlogPage }]}><kbd class="font-pixel hidden md:inline-block">[H]</kbd> Home</a>
       </li>
       <li>
         <a id="work" href="/#work-section" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="font-pixel hidden md:inline-block">[W]</kbd> Work</a>
       </li>
       <li>
-        <a id="blog" href="/blog/" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="hidden md:inline-block">[B]</kbd> Blog</a>
+        <a id="blog" href="/blog/" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center", { "font-bold": isBlogPage }]}><kbd class="hidden md:inline-block">[B]</kbd> Blog</a>
       </li>
       <li>
-        <a id="contact" href="/#contact-section" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="hidden md:inline-block">[C]</kbd> Contact</a>
+        <a id="contact" href="#contact-section" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="hidden md:inline-block">[C]</kbd> Contact</a>
       </li>
     </ul>
   </nav>
@@ -145,8 +152,15 @@
       });
     };
 
+    // Some nav links (like Blog) point to a dedicated page rather than an
+    // in-page hash, but still have a corresponding section on the homepage
+    // that should highlight them while scrolled into view.
+    const sectionOverrides: Record<string, string> = {
+      blog: "#blog-section",
+    };
+
     navLinks.forEach((link) => {
-      const hash = new URL(link.href, location.href).hash;
+      const hash = sectionOverrides[link.id] ?? new URL(link.href, location.href).hash;
       const section = hash ? document.querySelector<HTMLElement>(hash) : null;
       if (!section) return;
 

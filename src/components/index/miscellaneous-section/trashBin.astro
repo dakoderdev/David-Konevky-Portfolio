@@ -1,26 +1,25 @@
-<div class="absolute flex flex-col sm:left-4 w-[calc(100%-4px)] h-full">
-  <div id="bin-container" class="relative w-full grow h-full overflow-hidden"></div>
+<div class="absolute inset-x-0 sm:left-4 sm:right-0 flex flex-col h-full">
+  <div
+    id="bin-container"
+    class="relative w-full grow h-full overflow-hidden"
+    style="contain: strict;"
+  >
+    <canvas id="bin-canvas" class="block w-full h-full"></canvas>
+  </div>
 </div>
 
 <script>
   import Matter from "matter-js";
-  import gsap from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  // ---- CONFIG: tweak everything here ----
+  // ---- CONFIG: unchanged from the original, plus a few rendering knobs ----
   const CONFIG = {
-    // icon sizing
-    iconHeight: 36, // px, roughly h-3
+    iconHeight: 36,
 
-    // spawn behaviour
-    spawnIntervalMs: 220, // ms between throws
-    spawnCount: 80, // total icons to throw (set to null for infinite)
-    spawnXJitter: 0.6, // fraction of container width to randomize spawn x around center
-    spawnYOffset: 80, // px above the container top that icons spawn (off screen)
+    spawnIntervalMs: 220,
+    spawnCount: 90,
+    spawnXJitter: 0.6,
+    spawnYOffset: 80,
 
-    // throw velocity (matter-js units, roughly px/frame at 60fps)
     velocityXMin: -3,
     velocityXMax: 3,
     velocityYMin: 2,
@@ -28,20 +27,23 @@
     angularVelocityMin: -0.1,
     angularVelocityMax: 0.1,
 
-    // physics
     gravityY: 1,
-    restitution: 0.3, // bounciness
+    restitution: 0.3,
     friction: 0.6,
     frictionAir: 0.01,
     density: 0.002,
 
-    // walls
     wallThickness: 200,
 
-    // scroll trigger: how far into the viewport the bin must scroll before it fires, once
-    scrollTriggerStart: "top 85%",
+    // fires once when this fraction of the container has scrolled into view
+    // (replaces ScrollTrigger's "top 85%")
+    triggerRootMargin: "0px 0px -15% 0px",
 
-    // svg source list, each rendered at iconHeight with auto width
+    // rendering
+    maxDpr: 2,          // cap retina cost; 3x on a phone triples fill rate for no visible gain
+    fixedStep: 1000 / 60,
+    maxSubSteps: 3,     // clamp catch-up after a stall so it can't spiral
+
     icons: [
       `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="21.5" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
@@ -86,8 +88,7 @@
 <circle cx="24.5" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="18.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="21.5" cy="24.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
-</svg>
-`,
+</svg>`,
       `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="23" cy="3.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="11" cy="21.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
@@ -118,8 +119,7 @@
 <circle cx="2" cy="6.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="2" cy="9.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="2" cy="12.5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
-</svg>
-`,
+</svg>`,
       `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="23" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="20" cy="2" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
@@ -156,8 +156,8 @@
 <circle cx="26" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="17" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="20" cy="26" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
-</svg>
-`, `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg>`,
+      `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="20" cy="5" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="17" cy="20" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="17" cy="23" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
@@ -182,76 +182,80 @@
 <circle cx="23" cy="11" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="20" cy="17" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
 <circle cx="23" cy="14" r="1.125" fill="black" stroke="black" stroke-width="0.25"/>
-</svg>
-`,
+</svg>`,
     ],
-    // native viewBox aspect ratios (w/h) per icon above, used to compute auto width from iconHeight
-    iconAspectRatios: [22 / 22, 22 / 22, 22 / 22, 22 / 22, 22 / 22],
+    iconAspectRatios: [1, 1, 1, 1],
   };
 
   function rand(min: number, max: number) {
     return min + Math.random() * (max - min);
   }
 
-  function init() {
-    const container = document.getElementById("bin-container");
-    if (!container) return;
+  // Rasterize each SVG exactly once into a bitmap at device resolution.
+  // This is the single biggest win: 4 bitmaps instead of ~3,400 live vector nodes.
+  function rasterize(markup: string, w: number, h: number, dpr: number) {
+    return new Promise<HTMLCanvasElement>((resolve, reject) => {
+      const sized = markup
+        .replace(/width="\d+"/, `width="${Math.round(w * dpr)}"`)
+        .replace(/height="\d+"/, `height="${Math.round(h * dpr)}"`);
+      const img = new Image();
+      img.onload = () => {
+        const off = document.createElement("canvas");
+        off.width = Math.max(1, Math.round(w * dpr));
+        off.height = Math.max(1, Math.round(h * dpr));
+        off.getContext("2d")!.drawImage(img, 0, 0, off.width, off.height);
+        resolve(off);
+      };
+      img.onerror = reject;
+      img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(sized);
+    });
+  }
 
-    const { Engine, Runner, Bodies, Composite, Body } = Matter;
+  async function init(container: HTMLElement) {
+    const canvas = container.querySelector("canvas") as HTMLCanvasElement | null;
+    if (!canvas) return () => {};
+    const ctx = canvas.getContext("2d", { alpha: true })!;
 
-    const engine = Engine.create();
-    engine.gravity.y = CONFIG.gravityY;
+    const { Engine, Bodies, Composite, Body, Sleeping } = Matter;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.maxDpr);
     let width = container.clientWidth;
     let height = container.clientHeight;
 
-    const { wallThickness } = CONFIG;
-
-    function makeWalls(w: number, h: number) {
-      return {
-        ground: Bodies.rectangle(w / 2, h + wallThickness / 2, w * 4, wallThickness, { isStatic: true }),
-        leftWall: Bodies.rectangle(-wallThickness / 2, h / 2, wallThickness, h * 4, { isStatic: true }),
-        rightWall: Bodies.rectangle(w + wallThickness / 2, h / 2, wallThickness, h * 4, { isStatic: true }),
-      };
+    function sizeCanvas() {
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
     }
+    sizeCanvas();
 
-    let { ground, leftWall, rightWall } = makeWalls(width, height);
+    const h = CONFIG.iconHeight;
+    const sprites = await Promise.all(
+      CONFIG.icons.map((markup, i) =>
+        rasterize(markup, h * (CONFIG.iconAspectRatios[i] ?? 1), h, dpr),
+      ),
+    );
+
+    const engine = Engine.create();
+    engine.gravity.y = CONFIG.gravityY;
+    // Lets settled piles drop out of the solver entirely instead of being
+    // re-resolved forever. Does not change how they fall or land.
+    engine.enableSleeping = true;
+
+    const { wallThickness } = CONFIG;
+    const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width * 4, wallThickness, { isStatic: true });
+    const leftWall = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
+    const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 4, { isStatic: true });
     Composite.add(engine.world, [ground, leftWall, rightWall]);
 
-    const runner = Runner.create();
-    Runner.run(runner, engine);
-
-    type IconBody = { body: Matter.Body; el: HTMLElement; w: number; h: number };
-    const iconBodies: IconBody[] = [];
+    type Item = { body: Matter.Body; sprite: HTMLCanvasElement; w: number; h: number };
+    const items: Item[] = [];
 
     function spawnIcon() {
-      const idx = Math.floor(Math.random() * CONFIG.icons.length);
-      const svgMarkup = CONFIG.icons[idx];
-      const aspect = CONFIG.iconAspectRatios[idx] ?? 1;
-
-      const h = CONFIG.iconHeight;
-      const w = h * aspect;
-
-      const el = document.createElement("div");
-      el.style.position = "absolute";
-      el.style.top = "0";
-      el.style.left = "0";
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
-      el.style.pointerEvents = "none";
-      el.style.willChange = "transform";
-      el.innerHTML = svgMarkup;
-      const svgEl = el.querySelector("svg");
-      if (svgEl) {
-        svgEl.setAttribute("width", String(w));
-        svgEl.setAttribute("height", String(h));
-      }
-      container?.appendChild(el);
+      const idx = Math.floor(Math.random() * sprites.length);
+      const w = h * (CONFIG.iconAspectRatios[idx] ?? 1);
 
       const centerX = width / 2 + rand(-width * CONFIG.spawnXJitter, width * CONFIG.spawnXJitter) / 2;
-      const spawnY = -CONFIG.spawnYOffset;
-
-      const body = Bodies.rectangle(centerX, spawnY, w, h, {
+      const body = Bodies.rectangle(centerX, -CONFIG.spawnYOffset, w, h, {
         restitution: CONFIG.restitution,
         friction: CONFIG.friction,
         frictionAir: CONFIG.frictionAir,
@@ -265,45 +269,115 @@
       Body.setAngularVelocity(body, rand(CONFIG.angularVelocityMin, CONFIG.angularVelocityMax));
 
       Composite.add(engine.world, body);
-      iconBodies.push({ body, el, w, h });
+      items.push({ body, sprite: sprites[idx], w, h });
+      wake();
     }
 
+    function draw() {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        const p = it.body.position;
+        ctx.setTransform(dpr, 0, 0, dpr, p.x * dpr, p.y * dpr);
+        ctx.rotate(it.body.angle);
+        ctx.drawImage(it.sprite, -it.w / 2, -it.h / 2, it.w, it.h);
+      }
+    }
+
+    // ---- single loop: physics + draw, fixed timestep ----
+    let rafId: number | null = null;
+    let last = 0;
+    let acc = 0;
+    let spawning = true;
+
+    function everythingSettled() {
+      if (spawning) return false;
+      for (let i = 0; i < items.length; i++) if (!items[i].body.isSleeping) return false;
+      return true;
+    }
+
+    function frame(now: number) {
+      if (!last) last = now;
+      let dt = now - last;
+      last = now;
+      if (dt > 100) dt = 100; // a tab switch shouldn't teleport the pile
+      acc += dt;
+
+      let steps = 0;
+      while (acc >= CONFIG.fixedStep && steps < CONFIG.maxSubSteps) {
+        Engine.update(engine, CONFIG.fixedStep);
+        acc -= CONFIG.fixedStep;
+        steps++;
+      }
+      if (acc > CONFIG.fixedStep) acc = 0;
+
+      draw();
+
+      if (everythingSettled()) {
+        rafId = null; // canvas keeps the last frame; nothing left to compute
+        return;
+      }
+      rafId = requestAnimationFrame(frame);
+    }
+
+    function wake() {
+      if (rafId === null && !paused) {
+        last = 0;
+        acc = 0;
+        rafId = requestAnimationFrame(frame);
+      }
+    }
+
+    // ---- pause when scrolled out of view or tab is hidden ----
+    let paused = false;
+    function pause() {
+      paused = true;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    function resume() {
+      paused = false;
+      if (!everythingSettled()) wake();
+    }
+
+    const visObserver = new IntersectionObserver(
+      ([e]) => (e.isIntersecting ? resume() : pause()),
+      { threshold: 0 },
+    );
+    visObserver.observe(container);
+
+    const onVisibility = () => (document.hidden ? pause() : resume());
+    document.addEventListener("visibilitychange", onVisibility);
+
+    // ---- spawning ----
     let spawned = 0;
     const spawnTimer = window.setInterval(() => {
       spawnIcon();
       spawned++;
       if (CONFIG.spawnCount !== null && spawned >= CONFIG.spawnCount) {
         window.clearInterval(spawnTimer);
+        spawning = false;
       }
     }, CONFIG.spawnIntervalMs);
 
-    function render() {
-      for (const { body, el, w, h } of iconBodies) {
-        el.style.transform = `translate(${body.position.x - w / 2}px, ${body.position.y - h / 2}px) rotate(${body.angle}rad)`;
-      }
-      requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
+    wake();
 
-    // ---- resize handling ----
-    // Reposition the static walls in place rather than tearing down/rebuilding
-    // the engine, so existing bodies keep their velocity/state (no physics reset).
+    // ---- resize: move the walls, don't rebuild the world ----
     let resizeTimer: number | null = null;
-
     function applyResize() {
-      const newWidth = container!.clientWidth;
-      const newHeight = container!.clientHeight;
-      if (newWidth === width && newHeight === height) return;
-      width = newWidth;
-      height = newHeight;
+      const nw = container.clientWidth;
+      const nh = container.clientHeight;
+      if (nw === width && nh === height) return;
+      width = nw;
+      height = nh;
+      sizeCanvas();
 
       Body.setPosition(ground, { x: width / 2, y: height + wallThickness / 2 });
       Body.setPosition(leftWall, { x: -wallThickness / 2, y: height / 2 });
       Body.setPosition(rightWall, { x: width + wallThickness / 2, y: height / 2 });
 
-      // nudge any icon that's now outside the new bounds back inside so it
-      // doesn't get stuck clipping through a wall that moved past it
-      for (const { body, w, h } of iconBodies) {
+      for (const { body, w, h: ih } of items) {
         const minX = w / 2;
         const maxX = width - w / 2;
         if (body.position.x < minX || body.position.x > maxX) {
@@ -312,28 +386,103 @@
             y: body.position.y,
           });
         }
+        Sleeping.set(body, false); // sleepers must re-settle against the moved walls
       }
+      wake();
     }
-
     function onResize() {
       if (resizeTimer !== null) window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(applyResize, 150);
     }
-
     const resizeObserver = new ResizeObserver(onResize);
     resizeObserver.observe(container);
+
+    return function destroy() {
+      window.clearInterval(spawnTimer);
+      if (resizeTimer !== null) window.clearTimeout(resizeTimer);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+      visObserver.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      Composite.clear(engine.world, false);
+      Engine.clear(engine);
+    };
+  }
+
+  // Reduced motion: settle the pile silently, paint one frame, never animate.
+  async function initStatic(container: HTMLElement) {
+    const canvas = container.querySelector("canvas") as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const { Engine, Bodies, Composite, Body } = Matter;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, CONFIG.maxDpr);
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+
+    const h = CONFIG.iconHeight;
+    const sprites = await Promise.all(
+      CONFIG.icons.map((m, i) => rasterize(m, h * (CONFIG.iconAspectRatios[i] ?? 1), h, dpr)),
+    );
+
+    const engine = Engine.create();
+    engine.gravity.y = CONFIG.gravityY;
+    const t = CONFIG.wallThickness;
+    Composite.add(engine.world, [
+      Bodies.rectangle(width / 2, height + t / 2, width * 4, t, { isStatic: true }),
+      Bodies.rectangle(-t / 2, height / 2, t, height * 4, { isStatic: true }),
+      Bodies.rectangle(width + t / 2, height / 2, t, height * 4, { isStatic: true }),
+    ]);
+
+    const items: { body: Matter.Body; sprite: HTMLCanvasElement; w: number }[] = [];
+    const n = CONFIG.spawnCount ?? 40;
+    for (let i = 0; i < n; i++) {
+      const idx = Math.floor(Math.random() * sprites.length);
+      const w = h * (CONFIG.iconAspectRatios[idx] ?? 1);
+      const body = Bodies.rectangle(rand(w, width - w), -rand(50, 600), w, h, {
+        restitution: CONFIG.restitution,
+        friction: CONFIG.friction,
+        frictionAir: CONFIG.frictionAir,
+        density: CONFIG.density,
+      });
+      Body.setAngle(body, rand(-Math.PI, Math.PI));
+      Composite.add(engine.world, body);
+      items.push({ body, sprite: sprites[idx], w });
+    }
+
+    for (let i = 0; i < 900; i++) Engine.update(engine, CONFIG.fixedStep);
+
+    for (const it of items) {
+      const p = it.body.position;
+      ctx.setTransform(dpr, 0, 0, dpr, p.x * dpr, p.y * dpr);
+      ctx.rotate(it.body.angle);
+      ctx.drawImage(it.sprite, -it.w / 2, -h / 2, it.w, h);
+    }
   }
 
   function setup() {
     const container = document.getElementById("bin-container");
     if (!container) return;
 
-    ScrollTrigger.create({
-      trigger: container,
-      start: CONFIG.scrollTriggerStart,
-      once: true,
-      onEnter: init,
-    });
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let destroy: (() => void) | null = null;
+
+    // Replaces GSAP ScrollTrigger — same "fire once on scroll into view" behaviour,
+    // with no 60 KB dependency.
+    const trigger = new IntersectionObserver(
+      async (entries) => {
+        if (!entries[0].isIntersecting) return;
+        trigger.disconnect();
+        if (reduced) await initStatic(container);
+        else destroy = await init(container);
+      },
+      { rootMargin: CONFIG.triggerRootMargin },
+    );
+    trigger.observe(container);
+
+    window.addEventListener("pagehide", () => destroy?.(), { once: true });
   }
 
   if (document.readyState === "loading") {

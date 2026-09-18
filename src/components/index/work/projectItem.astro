@@ -37,7 +37,7 @@ const shortenedUrl = project.link.split("/")[2];
     <Image class="project-image top-0 right-0 absolute w-full h-full object-cover " src={project.image} alt={"Website of " + project.name} height={720} width={1280} loading="lazy" decoding="async" />
     <div class="absolute bottom-0 right-0 sm:bottom-2 sm:right-2 flex p-1.5 pr-0 pb-0 sm:p-1.5 gap-0.5 bg-white">
       <ul class="flex flex-wrap h-6 sm:h-6.5 gap-0.5">
-        {project.stack.map((item) => <li class="px-1.5 sm:px-2 sm:hover:px-2.5 flex items-center text-xs bg-black text-white font-medium">{item}</li>)}
+        {project.stack.map((item) => <li class="px-1.5 sm:px-2 flex items-center text-xs bg-black text-white font-medium">{item}</li>)}
       </ul>
       <svg class="hidden sm:inline-block h-6.5" viewBox="0 0 121 28" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path

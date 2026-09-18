@@ -1,7 +1,7 @@
 ---
 title: "Remaking my portfolio: an exercise on perseverance"
 description: "How the process taught me about the importance of patience and exploration"
-date: 2026-09-16
+date: 2026-09-18
 cover: "/blog/placeholder.png"
 cover-alt: "Placeholder picture of my portfolio"
 slug: "91366e851a"
@@ -72,11 +72,11 @@ Bringing this very conceptual idea to a computer screen needs a lot of specific 
 
 When I realized that the second attempt was not really working out, I dropped the project, and decided to get my mind off of it for a while, so I could revisit it with a fresh pair of eyes. After enough time had passed. I then went back to the brainstorming phase, and this time I *really* wanted to focus on looking at the core values I wanted to communicate, and base the general vibe from there. 
 
-I started to think about aestethics less like a shell you put on top of a website, and more so a reflection of what the website is trying to communicate. So on my initial board, I didn't put any pictures up, instead I put key words I wanted the website to communicate, and then slowly over time I made a collection of pictures and references that represented the feeling I wanted the portfolio to have.
+I started to think about aestethics less like a shell you put on top of a website, and more so a reflection of what the website is trying to communicate. So on my initial board, I didn't put any pictures up, instead I put key words I wanted the website to communicate.
 
 <figure>
   <img src="/blog/post_1/image_5b.webp" alt="Figjam board with a bunch of adjectives">
-  <figcaption>You can see here the words that captured the essence of what I wanted visitors to think of me based on my website</figcaption>
+  <figcaption>Here are the words I wanted visitors to think of when they saw my website</figcaption>
 </figure>
 
 I then, started to look for thematic references, that aligned with these words. These references included everything from musical rollouts, product branding, operating systems, etc. Stuff that in some way shape or form connected to one or more words on the board and brought up similar feelings. The important thing was that *all* of these references needed to have some sort of connection with the spirit of the project, anything that was just there for the vibes needed to be discarded.
@@ -116,7 +116,7 @@ But it wasn't good enough for me... the concept was cool, but in execution it me
 
 And that's when an idea struck to me: "What if I did this lo-fi screen, with a perlin noise grid, that would slowly replace the cells line by line like an old screen?" So I made another branch and inmediately started working on it. At first I tried with teeny tiny images, since it was a potential way to revisit the cultural osmosis concept mentioned earlier, but it didn't really look the way I wanted it too, even after countless amounts of tinkering. By that point, I just concluded that the biggest issue with the "highlighting my references" concept was that by putting them on the home screen, I'm kind of implying that I designed them, which is not the intended effect.
 
-But then I tried with ascii, and that's when I knew, this is _exactly_ where I wanted to go. It was the combinations of all the things I wanted. It was quirky yet sophisticated. It harkens back to old technology but translated to modern design. It's something that an AI wouldn't think of by itself when tasked to do a portfolio. It was a natural conclusion to the long winded quest I went throughout all these different projects.
+But then I tried with ascii, and that's when I knew, this is _exactly_ where I wanted to go. It was the combination of all the things I wanted. It was quirky yet sophisticated. It harkens back to old technology but translated to modern design. It's something that an AI wouldn't think of by itself when tasked to do a portfolio. It was a natural conclusion to the long winded quest I went throughout all these different projects.
 
 <figure>
   <img src="/blog/post_1/image_8.webp" alt="First concept of the home screen, almost the same as it is right now">
@@ -124,3 +124,16 @@ But then I tried with ascii, and that's when I knew, this is _exactly_ where I w
 </figure>
 
 And by this point it was almost a race to the finish line, since all inspiration came down to me very naturally, and I knew I had to strike while the iron was hot. Coincidentally, I was also just tasked to develop a CLI myself by my uni professor for an assignment using react-ink.
+
+Now this is where I find myself now, almost finishing the project, feeling very proud overall for what I've done. I can't tell you much about how it's going to be from here on out once this is deployed. But what I know is that I've developed a project that has my stamp all over it, and I couldn't be happier about it. The only things I have to do right now is figure out some performance and accesibility stuff but I've got the main thing out of the way which was developing the main screen layout.
+
+Let's talk about some of the things I learned while doing this project.
+1. **Never fall for the sunk cost fallacy:** do not be afraid to try something else just because you put a lot of time and effort on a specific idea or section. In fact, I've often noticed that in stuff like graphic design, web design, ux/ui design. Sometimes the greatest ideas are done on a whim. Which also leads me to my second point...
+2. **Give yourself space to iterate:** I think the best projects usually are good because the people who made them felt free to throw everything to the wall, to see what would stick. If you feel too trapped by an idea, maybe you should explore something else, and compare and contrast to see which one you like the most. There's a phrase I learnt from a Rick Rubin book which says
+
+   > Hold the seeds flat
+
+   And that's the same advice I'd give to you, give yourself the space to sit with a 1000 ideas at once, because that way you can see which ones speak to you at the moment and which ones don't. And who knows? Maybe on another occasion, you can revisit those other seeds for different projects.
+3. **Seek inspirations outside of just visuals:** we live in an age where apps like Pinterest and Are.na dominate the market, and while they are useful, and I have used them a lot. I *beg* of you to think more often about other things in your life that you find interesting, sometimes from completely different mediums than website deisgn, and see how it can be turned into a source of inspiration. Often as developers we get too stuck in the echochamber of how things should look and feel, and while those ideas and practices are there for a reason, there's no harm in looking outside the bubble and shaking things up once in a while. In fact that's often how people end up doing innovative breakthroughs. And even if you fail, I think it makes you learn why those practices exist in the first place, instead of just blindly following them.
+
+That's all, see you on the next blogpost, hopefully soon. And thanks for visiting my page btw <3.

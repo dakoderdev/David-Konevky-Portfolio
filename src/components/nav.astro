@@ -3,27 +3,68 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
 ---
 
 <header class="font-pixel">
-  <nav id="site-nav" class="fixed z-990 top-0 sm:bottom-5 inset-x-0 sm:inset-auto sm:w-auto sm:left-1/2 sm:-translate-x-1/2 bg-white/85 backdrop-blur-xs shadow-lg shadow-black/4 sm:shadow-black/6 p-3 flex justify-between items-center gap-3 transition-colors duration-300">
-    <a href="/">
+  <nav id="site-nav" class="fixed z-990 top-0 sm:bottom-5 inset-x-0 sm:inset-auto sm:w-auto sm:left-1/2 sm:-translate-x-1/2 flex justify-between sm:justify-start items-center gap-3 sm:gap-3 p-3 sm:p-3 transition-colors duration-300 bg-transparent sm:bg-white/85 sm:backdrop-blur-xs sm:shadow-lg sm:shadow-black/6">
+    <a href="/" id="nav-logo" class="max-sm:flex max-sm:items-center max-sm:justify-center max-sm:bg-white/85 max-sm:backdrop-blur-xs z-995 max-sm:shadow-lg max-sm:shadow-black/4 max-sm:p-3 sm:pl-2.5 transition-colors duration-300">
           <svg id="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 78" class="h-4 w-auto fill-black transition-colors duration-300" data-astro-cid-l3rxwkef=""> <path d="m116.87,39.08C116.87,17.59,99.48.16,78,.09h0S0,.08,0,.08v78h78c21.48-.07,38.87-17.51,38.87-39Z" data-astro-cid-l3rxwkef=""></path> <rect x="117" width="39" height="78" data-astro-cid-l3rxwkef=""></rect> <polygon points="234 0 195 0 156 39 195 78 234 78 195 39 234 0" data-astro-cid-l3rxwkef=""></polygon> </svg>
-
     </a>
-    <ul class="flex relative">
-      <li>
-        <a id="home" href="/#hero-section" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center", { "font-bold": !isBlogPage }]}><kbd class="font-pixel hidden md:inline-block">[H]</kbd> Home</a>
-      </li>
-      <li>
-        <a id="work" href="/#work-section" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="font-pixel hidden md:inline-block">[W]</kbd> Work</a>
-      </li>
-      <li>
-        <a id="blog" href="/blog/" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center", { "font-bold": isBlogPage }]}><kbd class="hidden md:inline-block">[B]</kbd> Blog</a>
-      </li>
-      <li>
-        <a id="contact" href="#contact-section" class="py-1 px-3 text-nowrap flex gap-1 items-center"><kbd class="hidden md:inline-block">[C]</kbd> Contact</a>
-      </li>
-    </ul>
+    <div id="nav-menu-wrapper" class="relative max-sm:bg-white/85 max-sm:backdrop-blur-xs max-sm:shadow-lg max-sm:shadow-black/4 transition-colors duration-300">
+      <button id="nav-hamburger" type="button" aria-label="Toggle menu" aria-expanded="false" class="relative z-995 sm:hidden flex items-center justify-center size-10 text-black transition-colors duration-300">
+        <svg class="hamburger-icon-open absolute size-6 fill-current"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="20.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="17.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="17.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="14.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="14.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="11.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="8.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="5.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="2.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="11.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="8.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="5.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="2.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="11.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="8.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="5.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="2.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="14.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="17.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="20.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+        </svg>
+        <svg class="hamburger-icon-close absolute size-4 fill-current opacity-0" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="17.5" cy="5.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="14.5" cy="8.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="11.5" cy="11.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="8.5" cy="8.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="8.5" cy="14.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="5.5" cy="17.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="17.5" cy="17.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="14.5" cy="14.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="2.5" cy="20.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="5.5" cy="5.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="2.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+          <circle cx="20.5" cy="2.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"/>
+        </svg>
+      </button>
+      <ul id="nav-menu" class="nav-menu-panel flex-col sm:flex-row sm:relative sm:mt-0 sm:bg-transparent sm:shadow-none sm:p-0 max-sm:bg-white max-sm:shadow-2xl max-sm:shadow-black/20 transition-colors duration-300">
+        <li>
+          <a id="home" href="/#hero-section" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center max-sm:text-xl max-sm:py-3", { "font-bold": !isBlogPage }]}><kbd class="font-pixel hidden md:inline-block">[H]</kbd> Home</a>
+        </li>
+        <li>
+          <a id="work" href="/#work-section" class="py-1 px-3 text-nowrap flex gap-1 items-center max-sm:text-xl max-sm:py-3"><kbd class="font-pixel hidden md:inline-block">[W]</kbd> Work</a>
+        </li>
+        <li>
+          <a id="blog" href="/blog/" class:list={["py-1 px-3 text-nowrap flex gap-1 items-center max-sm:text-xl max-sm:py-3", { "font-bold": isBlogPage }]}><kbd class="hidden md:inline-block">[B]</kbd> Blog</a>
+        </li>
+        <li>
+          <a id="contact" href="#contact-section" class="py-1 px-3 text-nowrap flex gap-1 items-center max-sm:text-xl max-sm:py-3"><kbd class="hidden md:inline-block">[C]</kbd> Contact</a>
+        </li>
+      </ul>
+    </div>
   </nav>
-  <div id="site-links" class="fixed z-980 bottom-3 left-3 sm:bottom-auto top-auto sm:top-2.5 sm:left-2.5 flex gap-2.5">
+  <div id="site-links" class="fixed z-995 bottom-3 left-3 sm:bottom-auto top-auto sm:top-2.5 sm:left-2.5 flex gap-2.5">
     <a href="#" class="site-link bg-white/85 items-center backdrop-blur-xs p-2 pr-2.5 sm:p-1 sm:pr-1.5 flex gap-2.5 transition-colors duration-300">
       <svg class="size-6 sm:size-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -34,26 +75,26 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
     </a>
     <a href="#" class="site-link bg-white/85 items-center backdrop-blur-xs p-2 pr-2.5 sm:p-1 sm:pr-1.5 flex gap-2.5 transition-colors duration-300">
       <svg class="size-6 sm:size-4" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12.5" cy="8" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="18.5" cy="8" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="15.5" cy="20" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="12.5" cy="20" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="9.5" cy="20" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="6.5" cy="20" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="3.5" cy="17" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="3.5" cy="14" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="3.5" cy="11" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="3.5" cy="8" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="3.5" cy="5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="6.5" cy="2" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="9.5" cy="2" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="12.5" cy="2" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="12.5" cy="5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="15.5" cy="5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="15.5" cy="8" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="18.5" cy="11" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="18.5" cy="14" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
-        <circle cx="18.5" cy="17" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="12" cy="7.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="18" cy="7.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="15" cy="19.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="12" cy="19.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="9" cy="19.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="6" cy="19.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="3" cy="16.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="3" cy="13.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="3" cy="10.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="3" cy="7.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="3" cy="4.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="6" cy="1.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="9" cy="1.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="12" cy="1.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="12" cy="4.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="15" cy="4.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="15" cy="7.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="18" cy="10.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="18" cy="13.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
+        <circle cx="18" cy="16.5" r="1.125" fill="currentColor" stroke="currentColor" stroke-width="0.25"></circle>
       </svg>
 
       <p class="text-xs">CV</p>
@@ -61,7 +102,50 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
   </div>
 </header>
 
-<style></style>
+<style>
+  .hamburger-icon-open,
+  .hamburger-icon-close {
+    transition: opacity 300ms ease-in-out;
+  }
+
+  #nav-hamburger.nav-hamburger-open .hamburger-icon-open {
+    opacity: 0;
+  }
+  #nav-hamburger.nav-hamburger-open .hamburger-icon-close {
+    opacity: 1;
+  }
+  #nav-hamburger:not(.nav-hamburger-open) .hamburger-icon-close {
+    opacity: 0;
+  }
+
+  .nav-menu-panel {
+    display: flex;
+  }
+
+  @media (max-width: 639.98px) {
+    .nav-menu-panel {
+      position: fixed;
+      top: -0.75rem;
+      right: -0.75rem;
+      bottom: -0.75rem;
+      height: calc(100dvh + 1.5rem);
+      width: 78vw;
+      max-width: 22rem;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 2rem;
+      transform: translateX(100%);
+      transition: transform 320ms ease-in-out;
+      z-index: 990;
+    }
+
+    .nav-menu-panel.nav-menu-open {
+      transform: translateX(0);
+    }
+  }
+</style>
 
 <script>
   const keyMap: Record<string, string> = {
@@ -85,7 +169,39 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       setSelected(link.id);
+      closeMenu();
     });
+  });
+
+  const hamburger = document.getElementById("nav-hamburger");
+  const menu = document.getElementById("nav-menu");
+
+  function closeMenu() {
+    menu?.classList.remove("nav-menu-open");
+    hamburger?.setAttribute("aria-expanded", "false");
+    hamburger?.classList.remove("nav-hamburger-open");
+  }
+
+  function openMenu() {
+    menu?.classList.add("nav-menu-open");
+    hamburger?.setAttribute("aria-expanded", "true");
+    hamburger?.classList.add("nav-hamburger-open");
+  }
+
+  hamburger?.addEventListener("click", () => {
+    const isOpen = hamburger.getAttribute("aria-expanded") === "true";
+    if (isOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest("#nav-menu-wrapper")) {
+      closeMenu();
+    }
   });
 
   document.addEventListener("keydown", (e) => {
@@ -114,21 +230,53 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
 
   const nav = document.getElementById("site-nav");
   const navIcon = document.getElementById("nav-icon");
+  const navLogo = document.getElementById("nav-logo");
+  const navMenuWrapper = document.getElementById("nav-menu-wrapper");
+  const navMenu = document.getElementById("nav-menu");
+  const hamburger = document.getElementById("nav-hamburger");
   const siteLinks = document.querySelectorAll<HTMLAnchorElement>(".site-link");
 
   if (nav && navIcon) {
-    const LIGHT = { navBg: "bg-white/85", navText: "text-black", iconFill: "fill-black", linkBg: "bg-white/85" };
-    const DARK = { navBg: "bg-black/85", navText: "text-white", iconFill: "fill-white", linkBg: "bg-black/85" };
+    const LIGHT = {
+      navBg: "sm:bg-white/85",
+      squareBg: "max-sm:bg-white/85",
+      menuBg: "max-sm:bg-white",
+      navText: "text-black",
+      iconFill: "fill-black",
+      linkBg: "bg-white/85",
+    };
+    const DARK = {
+      navBg: "sm:bg-black/85",
+      squareBg: "max-sm:bg-black/85",
+      menuBg: "max-sm:bg-black",
+      navText: "text-white",
+      iconFill: "fill-white",
+      linkBg: "bg-black/85",
+    };
 
     const setTheme = (theme: "light" | "dark") => {
       const from = theme === "dark" ? LIGHT : DARK;
       const to = theme === "dark" ? DARK : LIGHT;
 
-      nav.classList.remove(from.navBg, from.navText);
-      nav.classList.add(to.navBg, to.navText);
+      nav.classList.remove(from.navText);
+      nav.classList.add(to.navText);
+
+      nav.classList.remove(from.navBg);
+      nav.classList.add(to.navBg);
+
+      [navLogo, navMenuWrapper].forEach((el) => {
+        el?.classList.remove(from.squareBg);
+        el?.classList.add(to.squareBg);
+      });
+
+      navMenu?.classList.remove(from.menuBg);
+      navMenu?.classList.add(to.menuBg);
 
       navIcon.classList.remove(from.iconFill);
       navIcon.classList.add(to.iconFill);
+
+      hamburger?.classList.remove(from.navText);
+      hamburger?.classList.add(to.navText);
 
       siteLinks.forEach((link) => {
         link.classList.remove(from.linkBg, from.navText);

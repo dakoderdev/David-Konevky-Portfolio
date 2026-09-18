@@ -1,20 +1,25 @@
 ---
 import Layout from "../layouts/layout.astro";
-import Intro from "../components/intro.astro";
-import HeroSection from "../components/hero/heroSection.astro";
-import TrashBin from "../components/miscellaneous-section/trashBin.astro";
-import ScatteredGrid from "../components/skills/scatteredGrid.astro";
-import SkillTable from "../components/skills/skillTable.astro";
-import DotIcon from "../components/skills/dotIcon.astro";
-import ProjectItem from "../components/work/projectItem.astro";
-import BlogIcon from "../components/blog/blogIcon.astro";
+import HeroSection from "../components/index/hero/heroSection.astro";
+import TrashBin from "../components/index/miscellaneous-section/trashBin.astro";
+import ScatteredGrid from "../components/index/skills/scatteredGrid.astro";
+import SkillTable from "../components/index/skills/skillTable.astro";
+import DotIcon from "../components/index/skills/dotIcon.astro";
+import ProjectItem from "../components/index/work/projectItem.astro";
+import BlogIcon from "../components/index/blog/blogIcon.astro";
+
+import { Image } from "astro:assets";
 
 import { MY_SKILLS } from "../data/skills";
 import PROJECTS from "../data/projects";
+import { getCollection } from "astro:content";
+
+const postsRecent = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+).slice(0, 3);
 ---
 
 <Layout>
-  {/*<Intro />*/}
   <HeroSection />
   <section data-nav-theme="light" class="grid lg:grid-cols-2 gap-4 place-items-center">
     <div class="flex flex-col items-center px-4 py-8 sm:pl-12 w-full sm:py-37 gap-4.5">
@@ -37,25 +42,38 @@ import PROJECTS from "../data/projects";
       <SkillTable skills={MY_SKILLS.infrastructure} title="Infraestructura"><DotIcon icon="infraestructura" /></SkillTable>
     </div>
   </section>
-  <section data-nav-theme="light" id="work-section" data-nav-theme="light" class="relative bg-white px-2 py-8 sm:px-12 w-full sm:py-18">
+  <section data-nav-theme="light" id="work-section" data-nav-theme="light" class="relative bg-white px-4 py-8 sm:px-12 w-full sm:py-18">
     <h2 class="text-center pb-12 sm:pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">My Work</h2>
-    <div class="flex flex-col gap-8 sm:gap-24 md:px-12">
+    <div class="flex flex-col items-center gap-8 sm:gap-24 md:px-12">
       {PROJECTS.map((project) => <ProjectItem project={project} />)}
     </div>
   </section>
-  <section data-nav-theme="light" id="blog-section" class="flex flex-col gap-18 px-4 py-8 sm:px-12 sm:pt-24 sm:pb-37">
-    <div class="flex flex-col justify-between lg:flex-row items-center">
-      <div class="flex flex-col max-w-2xl gap-4.5">
-        <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want to learn more about the making-of:</h2>
+  <section data-nav-theme="dark" class="bg-black px-4 py-8 sm:px-12 w-full text-white sm:py-18 overflow-hidden">
+      <h2 class="text-center pb-12 sm:pb-18 text-5xl sm:text-[54px] leading-[1.15] tracking-tight font-pixel font-medium text-balance">Some facts about me</h2>
+
+  </section>
+  <section data-nav-theme="light" class="flex flex-col gap-3 px-4 py-8 overflow-hidden sm:px-12 sm:pt-24 sm:pb-37">
+    <div class="flex flex-col justify-between lg:flex-row pb-18 items-center">
+      <div class="flex flex-col max-w-2xl gap-4.5 pb-15">
+        <h2 class="text-5xl sm:text-[54px] leading-[1.15] text-balance tracking-tight font-pixel w-full min-h-31 font-medium">If you want <span>to learn more </span> <span>about</span> <span>the making-of:</span></h2>
         <p class="text-[28px] leading-[1.15] tracking-tight w-full">Here are some articles about my existing, ongoing, and future projects. They contain countless amounts of information about my design and development process, from early ideas to final execution.</p>   
       </div>
       <BlogIcon />
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-0.5">
-      <div class="bg-black aspect-4/3"></div>
-      <div class="bg-black aspect-4/3"></div>
-      <div class="bg-black aspect-4/3"></div>
-    </div>
+    <ul class="grid sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+            {postsRecent.map((post) => (
+                <li>
+                    <a href={`/blog/${post.data.slug ?? post.id}`}>
+                        <Image class="object-cover aspect-video pb-2" src={post.data.cover} alt={post.data["cover-alt"]} width={768} height={432}/>
+                        <h3 class="text-xl tracking-tight font-pixel pb-0.5">{post.data.title}</h3>
+                        <p class="text-sm text-black/80 text-end">{post.data.date.toLocaleDateString()}</p>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    <a href="/blog" class="bg-black/20 font-medium text-sm w-fit py-2 px-6 mx-auto">
+      Ver Mas
+    </a>
   </section>
 </Layout>
 

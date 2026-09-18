@@ -35,8 +35,8 @@ interface Props {
 }
 
 const {
-  rows = 44,
-  cols = 42,
+  rows = 66,
+  cols = 63,
   gapRatio = 0.075,
   weights = {},
   seed,
@@ -143,11 +143,11 @@ const variants = Array.from({ length: Math.max(1, variantCount) }, (_, i) =>
 );
 ---
 
-<div class="blog-icon-wrap h-101.5" data-cycle-seconds={cycleSeconds}>
+<div class="blog-icon-wrap h-85 sm:h-101.5" data-cycle-seconds={cycleSeconds}>
   {
     variants.map((cells, variantIndex) => (
       <svg
-        class="blog-icon h-101.5"
+        class="blog-icon h-85 sm:h-101.5"
         data-variant={variantIndex}
         style={{ opacity: variantIndex === 0 ? 1 : 0 }}
         viewBox={`0 0 ${cols} ${rows}`}

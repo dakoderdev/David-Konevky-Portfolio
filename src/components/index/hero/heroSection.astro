@@ -35,9 +35,12 @@
     firstSweepDurationMs: 220,
     noiseScale: 0.06,
     /** Perlin clusters around 0.5; >1 opens the ramp back up to its extremes. */
-    contrast: 1.2,
+    contrast: 1.25 /*1.2*/,
+    /** Added to v after contrast, shifting overall density. Positive = darker
+        (more cells cross into denser ramp chars), negative = lighter. */
+    thresholdScale: 0.05,
     /** Hard cap per frame for normal (non-first) sweeps. Lower = chunkier edge. */
-    maxCellsPerFrame: 10,
+    maxCellsPerFrame: 8,
     /** Randomize the per-frame batch so the edge reads as a terminal, not a ramp. */
     frameJitter: 0.4,
     charColor: "#000000",
@@ -166,7 +169,7 @@
 
     private sample(f: Field, gx: number, gy: number) {
       const raw = f.noise((gx + f.ox) * f.scale, (gy + f.oy) * f.scale);
-      const v = (raw - 0.5) * this.cfg.contrast + 0.5;
+      const v = (raw - 0.5) * this.cfg.contrast + 0.5 + this.cfg.thresholdScale;
       // Explicit NaN guard: a bad gx/gy used to fall through as 0, which maps to
       // the space character and silently renders as an empty cell.
       if (!(v >= 0)) return 0;

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme base {
     --font-geist: 'Geist', sans-serif;
@@ -11,36 +12,42 @@ button {
     @apply cursor-pointer;
 }
 
-.glossy-icon {
-    background-image: radial-gradient(
-        200% 160% at 50% -27.5%,
-        #FFFFFF80 0%,
-        #CCCCCC80 49%,
-        #AEAEAE80 50%,
-        #4C4C4C80 100%
-    );
-    background-color:white;
-}
-
-.glossy-icondark {
-    background-image: radial-gradient(
-        200% 160% at 50% -27.5%,
-        #CCCCCC 0%,
-        #606060 49%,
-        #4C4C4C 50%,
-        #000000 100%
-    );
-}
-
 html {
     scroll-behavior: smooth;
 }
 
-
-@utility rounded-squircle {
-    corner-shape: superellipse(2);
+.prose {
+    --tw-prose-headings: black;
+    --tw-prose-bold: black;
+    --tw-prose-links: black;
 }
 
-@utility rounded-ellipse-* {
-    corner-shape: superellipse(--value(integer, [*]));
+.prose :where(h1, h2, h3, h4):not(:where([class~="not-prose"] *)) {
+    font-family: var(--font-pixel);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+}
+
+.prose :where(h1):not(:where([class~="not-prose"] *)) {
+    font-size: 2rem;
+}
+
+.prose :where(h2):not(:where([class~="not-prose"] *)) {
+    font-size: 1.5rem;
+}
+
+.prose :where(h3):not(:where([class~="not-prose"] *)) {
+    font-size: 1.25rem;
+}
+
+.prose :where(p, ul, ol):not(:where([class~="not-prose"] *)) {
+    font-family: var(--font-geist);
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.85);
+    font-size:1.05rem;
+}
+
+.prose :where(figcaption):not(:where([class~="not-prose"] *)) {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.7);
 }

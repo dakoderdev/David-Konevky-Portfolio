@@ -233,15 +233,45 @@ const variants = Array.from({ length: Math.max(1, variantCount) }, (_, i) =>
 
     const cycleSeconds = Number(wrap.dataset.cycleSeconds) || 2.5;
     let current = 0;
+    let active = false;
+    let cycleCall: gsap.core.Tween | null = null;
+
+    const stopCycle = () => {
+      active = false;
+      cycleCall?.kill();
+      cycleCall = null;
+    };
 
     const advance = () => {
+      if (!active) return;
+
       const next = (current + 1) % variants.length;
       gsap.set(variants[current], { opacity: 0 });
       gsap.set(variants[next], { opacity: 1 });
       current = next;
-      gsap.delayedCall(cycleSeconds, advance);
+      cycleCall = gsap.delayedCall(cycleSeconds, advance);
     };
 
-    gsap.delayedCall(cycleSeconds, advance);
+    const startCycle = () => {
+      if (active) return;
+
+      active = true;
+      cycleCall = gsap.delayedCall(cycleSeconds, advance);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? startCycle() : stopCycle()),
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(wrap);
+
+    const cleanup = () => {
+      stopCycle();
+      observer.disconnect();
+    };
+
+    document.addEventListener("astro:before-swap", cleanup, { once: true });
+    window.addEventListener("pagehide", cleanup, { once: true });
   });
 </script>

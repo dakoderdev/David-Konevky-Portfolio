@@ -103,24 +103,27 @@ const items = MY_SKILLS.featured;
       const leftShine = document.getElementById("left-shine");
       const rightShine = document.getElementById("right-shine");
 
-      const randomWidth = () => `${Math.random() * 2}rem`;
+      gsap.set(leftShine, { transformOrigin: "left center" });
+      gsap.set(rightShine, { transformOrigin: "right center" });
+
+      const randomScaleX = () => Math.random() * 0.625;
       const tl = gsap.timeline({ repeat: -1 });
 
       tl.fromTo(
         leftShine,
-        { width: "8rem" },
-        { duration: 0.3, width: `${Math.random() * 5}rem` },
+        { scaleX: 1 },
+        { duration: 0.3, scaleX: randomScaleX },
         0
       )
       .fromTo(
         rightShine,
-        { width: "8rem" },
-        { duration: 0.3, width: `${Math.random() * 5}rem` },
+        { scaleX: 1 },
+        { duration: 0.3, scaleX: randomScaleX },
         0
       )
       .to(
         [leftShine, rightShine],
-        { duration: 0.1, width: "8rem" }
+        { duration: 0.1, scaleX: 1 }
       );
 
       tl.play();

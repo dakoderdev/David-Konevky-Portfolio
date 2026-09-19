@@ -9,7 +9,6 @@ const blog = defineCollection({
     date: z.coerce.date(),
     cover: z.string().optional(),
     "cover-alt": z.string().optional(),
-    slug: z.string().optional(),
   }),
 });
 

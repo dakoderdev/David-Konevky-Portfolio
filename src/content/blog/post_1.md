@@ -4,7 +4,6 @@ description: "How the process taught me about the importance of patience and exp
 date: 2026-09-18
 cover: "/blog/placeholder.png"
 cover-alt: "Placeholder picture of my portfolio"
-slug: "91366e851a"
 ---
 
 We could start at many points in this story, but I think it's most appropiate that we start at the moment where it matters most, when I made my last portfolio. My last portfolio was made a little more than a year ago in 2025, and it's very serviceable! I am still very proud of it and I don't think it's obsolete or anything. But there are still a few important issues with it, ones that I didn't want to repeat on this version.

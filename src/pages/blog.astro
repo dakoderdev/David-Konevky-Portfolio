@@ -2,6 +2,7 @@
 import Layout from "../layouts/layout.astro"
 import { getCollection } from "astro:content"
 import { Image } from "astro:assets"
+import { getBlogSlug } from "../utils/blogSlugs"
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -14,7 +15,7 @@ const posts = (await getCollection("blog")).sort(
         <ul class="grid sm:grid-cols-2 md:grid-cols-3 gap-2 w-full">
             {posts.map((post) => (
                 <li>
-                    <a href={`/blog/${post.data.slug ?? post.id}`}>
+                    <a href={`/blog/${getBlogSlug(post)}`}>
                         <Image class="object-cover aspect-video pb-2" src={post.data.cover} alt={post.data["cover-alt"]} width={768} height={432}/>
                         <h2 class="text-xl tracking-tight font-pixel pb-0.5">{post.data.title}</h2>
                         <p class="text-sm text-black/80 text-end">{post.data.date.toLocaleDateString(undefined, { timeZone: "UTC" })}</p>

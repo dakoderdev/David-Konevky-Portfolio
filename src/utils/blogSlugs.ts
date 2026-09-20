@@ -11,5 +11,5 @@ export function slugify(value: string) {
 }
 
 export function getBlogSlug(post: CollectionEntry<"blog">) {
-  return slugify(post.data.title) || post.id;
+  return slugify(post.data.slug || post.data.title) || post.id;
 }

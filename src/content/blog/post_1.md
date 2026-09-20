@@ -1,5 +1,6 @@
 ---
 title: "Remaking my portfolio: an exercise on perseverance"
+slug: "remaking-my-portfolio"
 description: "How the process taught me about the importance of patience and exploration"
 date: 2026-09-18
 cover: "/blog/placeholder.png"

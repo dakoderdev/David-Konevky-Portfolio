@@ -1,43 +1,66 @@
-# Astro Starter Kit: Minimal
+# David Konevky - Portfolio
+
+This is the third version of my personal portfolio, built from scratch with Astro.
+
+The goal was to edit down the sections I didn't like from the original, breathe more life and personality into it, and just show off more of my skills in general instead of just telling the viewer.
+
+It also now includes a blog section where I can write more about projects of mine related in some way or another with my work.
+
+## What Is Inside
+
+- A homepage for my work as a developer.
+- A skills section, education section, and contact footer.
+- A small blog for writing about design, development, and the making-of behind projects.
+
+## Stack
+
+- [Astro](https://astro.build/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [GSAP](https://gsap.com/)
+
+## Running Locally
+
+This project uses Node `>=22.12.0`.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The local site will usually be available at:
 
-## 🚀 Project Structure
+```text
+http://localhost:4321
+```
 
-Inside of your Astro project, you'll see the following folders and files:
+Useful commands:
+
+| Command | What it does |
+| :-- | :-- |
+| `npm run dev` | Starts the local dev server |
+| `npm run build` | Builds the production site |
+| `npm run preview` | Previews the production build locally |
+| `npm run astro -- --help` | Shows Astro CLI help |
+
+## Project Structure
 
 ```text
 /
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
++-- public/
+|   +-- blog/
+|   +-- curriculums/
+|   +-- projects/
+|   +-- skills/
++-- src/
+|   +-- assets/
+|   +-- components/
+|   +-- content/
+|   +-- data/
+|   +-- layouts/
+|   +-- pages/
+|   +-- styles/
+|   +-- utils/
++-- package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Most of the writing lives in `src/content/blog`. Project and skills data live in `src/data`, and the main page is assembled in `src/pages/index.astro`.

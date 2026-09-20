@@ -23,7 +23,7 @@ const { Content } = await render(post);
 
     <p class="text-black pb-6">{post.data.date.toLocaleDateString(undefined, { timeZone: "UTC" })}</p>
 
-    <Image class="object-cover aspect-video pb-12" src={post.data.cover} alt={post.data["cover-alt"]} width={768} height={432} />
+    <Image class="object-cover w-full aspect-video mb-12" src={post.data.cover} alt={post.data["cover-alt"]} width={768} height={432} />
     <div class="prose mt-8">
       <Content />
     </div>

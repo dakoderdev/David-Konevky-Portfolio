@@ -22,22 +22,22 @@ And while I have toyed with tools like Illustrator or Photoshop every once in a 
 With all this in mind, slowly but surely I slowly started developing the first batch of covers. From that batch, here are a few highlights.
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_3.webp" alt="Text below says 'Derecho Economico', with a big capital 'D' on the center enclosed by a circle">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_3.webp" alt="Text below says 'Derecho Economico', with a big capital 'D' on the center enclosed by a circle">
   <figcaption>Accounting Information Systems II: this one was a fan-favorite among my friends, and I can see why. I think I captured the "older-brother-core" vibes pretty perfectly on this one</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_1.webp" alt="Text above says 'Comunicación', dithered rolling stones logo on the front with a lorem ipsum block of text on the back">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_1.webp" alt="Text above says 'Comunicación', dithered rolling stones logo on the front with a lorem ipsum block of text on the back">
   <figcaption>Communications: It's kind of frightening how much of the aesthethics/techniques from this cover look taken straight out of this portfolio, even down to the bar code</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_2.webp" alt="Text below says 'Derecho Economico', with a big capital 'D' on the center enclosed by a circle">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_2.webp" alt="Text below says 'Derecho Economico', with a big capital 'D' on the center enclosed by a circle">
   <figcaption>Economic Law: I really enjoy how simple and striking this one is. It's based on the title card of the horror movie "X", that's why it has this old-timey aesthethic</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_4.webp" alt="Text above says 'filsofía', with a sandy coast line on the right and some ancient looking scriptures on the left">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_4.webp" alt="Text above says 'filsofía', with a sandy coast line on the right and some ancient looking scriptures on the left">
   <figcaption>Philosophy: I was going through a heavy Caroline Polachek phase around this time, and I really loved the mystical and ancient vibes of her Sunset music video, so this was an attempt at capturing a similar vibe.</figcaption>
 </figure>
 
@@ -49,12 +49,12 @@ With all this in mind, slowly but surely I slowly started developing the first b
 In my senior year, I decided to keep the tradition afloat for the first time. Keep in mind that some of the subjects carried over from one year to the next, so I didn't replace them all, which is why there's seemingly fewer covers this time. This was the result:
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_7.webp" alt="Black vintage grainy background with a fisheye lens picture on the center and text that says 'Gestion y Calculo' at the top">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_7.webp" alt="Black vintage grainy background with a fisheye lens picture on the center and text that says 'Gestion y Calculo' at the top">
   <figcaption>Management & Calculus: I have stopped using grain effects as much in my own stuff, but this is one of the ones where it looks REALLY good, I remember it looking even better printed</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_8.webp" alt="The word 'Economía' is plastered on the background multiple times, with a big 3d bitcoin on the center">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_8.webp" alt="The word 'Economía' is plastered on the background multiple times, with a big 3d bitcoin on the center">
   <figcaption>Economics: This one was really cool! I remember this was when I started playing with displacement maps in order to give it this harsh, printed look, and the results were pretty awesome</figcaption>
 </figure>
 
@@ -66,17 +66,17 @@ In my senior year, I decided to keep the tradition afloat for the first time. Ke
 Here's the batch from 2024, when I started my Associate’s Degree in Computer Programming:
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_5.webp" alt="Computer like screen system with pixelated custom font that says 'Arquitectura y OS' at the center">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_5.webp" alt="Computer like screen system with pixelated custom font that says 'Arquitectura y OS' at the center">
   <figcaption>OS Architecture: I loooove this cover, it definitely sits on my top 3 at the very least. It looks deceptively simple but I remember struggling a lot and my computer sounded like a jet engine.</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_6.webp" alt="A Mii stands on the middle, with a text box talking about 'conjuntos matematicos' on the bottom, and a custom logotype that says 'Matemática' with a ':3' text bubble coming out of it">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_6.webp" alt="A Mii stands on the middle, with a text box talking about 'conjuntos matematicos' on the bottom, and a custom logotype that says 'Matemática' with a ':3' text bubble coming out of it">
   <figcaption>Math: Another greatest hit, the Wii console is an endless fountain of inspiration for me, and I think this was a pretty great attempt at immortalizing my undying love for it.</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_9.webp" alt="Old serif that says 'english' at the top, and a picture of some lace and a paper swan with text that says 'To love is to suffer me'">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_9.webp" alt="Old serif that says 'english' at the top, and a picture of some lace and a paper swan with text that says 'To love is to suffer me'">
   <figcaption>English: I really had a lot of work at the moment of making this one so it came out really simple, but I like it nonetheless! Also, it's the first cover in Figma!</figcaption>
 </figure>
 
@@ -90,22 +90,22 @@ Here's the batch from 2024, when I started my Associate’s Degree in Computer P
 Moving on, these are the ones made this year, so these are pretty recent! At this point I really could have half-assed it since a lot of my work is digital, but I still did them for the love of the game:
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_12.webp" alt="Large 'DK' Cartoon Network esque logo on the middle, with the word Legislación written below">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_12.webp" alt="Large 'DK' Cartoon Network esque logo on the middle, with the word Legislación written below">
   <figcaption>Legislation: last one I made, but easily my favorite, so i HAD to put it first. Inspired by my personal favorite era of Cartoon Network's branding</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_10.webp" alt="Pixelated picture of legs with Union Jack tights with text that says 'Desarrollo de Software'">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_10.webp" alt="Pixelated picture of legs with Union Jack tights with text that says 'Desarrollo de Software'">
   <figcaption>Software Development: this one came from a desire to combine two of my favorite fonts at that time, and from listening to a LOT of CANNELLE. Amazing artist btw!</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_11.webp" alt="Windows XP looking DK logo with a progress bar below, and the text 'Programación.exe' on top">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_11.webp" alt="Windows XP looking DK logo with a progress bar below, and the text 'Programación.exe' on top">
   <figcaption>Programming: you can sense the Windows XP inspiration here. I tried to be REALLY accurate to the original's startup screen, and I think I did well enough!</figcaption>
 </figure>
 
 <figure>
-  <img class="max-w-sm mx-auto" src="/blog/post_2/image_13.webp" alt="80s looking text that says 'Analisis de Datos' and below there's a clock, a radio, a martini glass, an ash tray with a lit cigarette all piled together">
+  <img class="max-w-sm w-full min-[384px]:mx-auto" src="/blog/post_2/image_13.webp" alt="80s looking text that says 'Analisis de Datos' and below there's a clock, a radio, a martini glass, an ash tray with a lit cigarette all piled together">
   <figcaption>Data Analysis: this one was made to look like this purely because I wanted to give some rep to Slayyyter's STARF*CKER era since the 80s vibes were immaculate and completely unappreciated</figcaption>
 </figure>
 

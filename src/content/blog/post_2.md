@@ -43,7 +43,7 @@ With all this in mind, slowly but surely I slowly started developing the first b
 
 ### Minor remarks about Batch Nº1
 - One of my favorite effects as you can see was threshold. Threshold was a life saver for this challenge, because it made black and white images look much more dramatic and it led to some really pretty effects.
-- The bezel tool deserves a mention too. I loved making my designs look 3D and you can see glimpses of it on image 1 and 4. It's one of the things that I wish they added to Figma honestly.
+- The bevel & emboss tool deserves a mention too. I loved making my designs look 3D and you can see glimpses of it on image 1 and 4. It's one of the things that I wish they added to Figma honestly.
 - There's not much use of SVG's but trust that WILL come later.
 
 In my senior year, I decided to keep the tradition afloat for the first time. Keep in mind that some of the subjects carried over from one year to the next, so I didn't replace them all, which is why there's seemingly fewer covers this time. This was the result:
@@ -111,11 +111,11 @@ Moving on, these are the ones made this year, so these are pretty recent! At thi
 
 ### Minor remarks about Batch Nº4
 - This is the first batch exclusively made in Figma, no other tools this time.
-- I also made these around the time Figma dropped shaders, so a LOT of these image effects, like the dither, the metallic text effect or the dotted effect were made using those shaders. They're pretty cool! Hopefully they add more in the future (including bevels & bezels like omg).
+- I also made these around the time Figma dropped shaders, so a LOT of these image effects, like the dither, the metallic text effect or the dotted effect were made using those shaders. They're pretty cool! Hopefully they add more in the future (including bevels & emboss like omg).
 - The covers have gotten increasingly lighter in university don't you think? With the exception of Data Analysis.
 - Even if these aren't nearly as complex as the ones made with Illustrator & Photoshop, they show that Figma is an amazing tool and hopefully it gets better from here on out.
 
-And that's all batches recapped! It was very fun scouring for these pictures and compiling them into one place because I can see a lot of my evolution on these covers. It's funny because some of my favorite covers were the first ones, but I think I have a soft spot for many of the newer covers because they pushed me out of my comfort zone and try a different approach for them than just → Y2K →  Threshold → done. 
+And that's all batches recapped! It was very fun scouring for these pictures and compiling them into one place because I can see a lot of my evolution on these covers. It's funny because some of my favorite covers were the first ones, but I think I have a soft spot for many of the newer covers because they pushed me out of my comfort zone and I tried a different approach for them than just → Take an image → Threshold → done. 
 
 Also it's pretty interesting because you can see the difference in their appearance from when I switched from the Adobe Suite into Figma as a primary tool. As much as I do miss the effects and complexity you can get from things like Photoshop’s effects and tools, Figma wins solely because it's free, much lighter than Illustrator and Photoshop while handling most of what they previously required separate tools for on it's own, and it's amazing specifically for ux/ui development. 
 

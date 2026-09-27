@@ -29,9 +29,19 @@ import Footer from "../components/footer.astro";
 		<meta name="twitter:title" content="David Konevky | Design Engineer" />
 		<meta name="twitter:description" content="Design engineer. I build interfaces and experiences for the modern web." />
 
+		<link rel="preload" href="/fonts/doto-900.woff2" as="font" type="font/woff2" crossorigin />
+		<style is:inline>
+			@font-face {
+				font-family: 'Doto';
+				font-style: normal;
+				font-weight: 900;
+				font-display: swap;
+				src: url(/fonts/doto-900.woff2) format('woff2');
+			}
+		</style>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Doto:wght,ROND@900,100&family=Geist+Pixel&family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 		<script defer src="https://cloud.umami.is/script.js" data-website-id="d37bbbd6-0a4a-4b95-bca8-4d9f214f37c2"></script>
 		<title>David Konevky - Portfolio | Design Engineer</title>
 	</head>

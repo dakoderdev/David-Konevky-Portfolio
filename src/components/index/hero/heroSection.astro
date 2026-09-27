@@ -23,8 +23,6 @@
 </section>
 
 <script>
-  import gsap from "gsap";
-
   const CONFIG = {
     cellSize: 10,
     gap: 0.5,
@@ -356,12 +354,6 @@
     const cleanup = () => grid.destroy();
     document.addEventListener("astro:before-swap", cleanup, { once: true });
     window.addEventListener("pagehide", cleanup, { once: true });
-
-    gsap.fromTo(
-      "#hero-text",
-      { opacity: 0 },
-      { opacity: 1, duration: 1, delay: 0.2, ease: "power1.out" }
-    );
   }
 
   initGrid();

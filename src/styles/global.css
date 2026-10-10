@@ -4,7 +4,7 @@
 @theme base {
     --font-geist: 'Geist', sans-serif;
     --font-pixel: 'Geist Pixel', sans-serif;
-    --font-doto: 'Doto', sans-serif;
+    --font-doto: 'Doto', monospace;
     --background-image-dots: radial-gradient(black 1.2px, transparent 1.2px);
 }
 

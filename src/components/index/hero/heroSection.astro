@@ -1,5 +1,7 @@
 ---
+import { getLang, useTranslations } from "../../../i18n/ui";
 
+const t = useTranslations(getLang(Astro.currentLocale));
 ---
 
 <section
@@ -10,7 +12,7 @@
   <canvas id="hero-grid" class="absolute inset-0 h-full w-full pointer-events-none"></canvas>
   <div
     id="hero-text"
-    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-3 px-4 sm:px-5 pt-4 pb-3 sm:py-5 bg-white/70 backdrop-blur-xs"
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-3 px-4 sm:px-5 pt-4 pb-3 sm:py-5 bg-white"
   >
     <h1
   class="opacity-100 text-nowrap uppercase text-5xl sm:text-6xl md:text-[5.5rem] font-black font-doto leading-[0.9] tracking-[-0.04em] text-center"
@@ -18,7 +20,7 @@
   <span aria-hidden="true">|</span>David<span aria-hidden="true">---|</span><br />
   <span aria-hidden="true">|</span>Konevky<span aria-hidden="true">-|</span>
 </h1>
-    <p class="font-medium text-center px-9">Design Engineer</p>
+    <p class="font-medium font-doto uppercase text-center px-9">&lt;{t("hero.role")} /&gt;</p>
   </div>
 </section>
 
@@ -42,7 +44,7 @@
     /** Randomize the per-frame batch so the edge reads as a terminal, not a ramp. */
     frameJitter: 0.4,
     charColor: "#000000",
-    fontFamily: "monospace",
+    fontFamily: "Doto, monospace",
   };
 
   type Config = typeof CONFIG;

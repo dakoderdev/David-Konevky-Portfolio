@@ -1,0 +1,10 @@
+---
+interface Props {
+  parts: readonly string[];
+  class?: string;
+}
+
+const { parts, class: className } = Astro.props;
+---
+
+<h2 class={className}>{parts.map((part, i) => <>{i > 0 && " "}<span>{part}</span></>)}</h2>

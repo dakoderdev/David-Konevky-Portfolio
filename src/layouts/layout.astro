@@ -2,15 +2,24 @@
 import "../styles/global.css";
 import Nav from "../components/nav.astro";
 import Footer from "../components/footer.astro";
+import { getLang, useTranslations, languages, localizePath, defaultLang, type Lang } from "../i18n/ui";
+
+const lang = getLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const site = "https://david-konevky-porfolio.vercel.app";
+// Only the homepage has a Spanish version so far; the blog is English-only
+const isHome = Astro.url.pathname.replace(/\/$/, "") === localizePath("", lang).replace(/\/$/, "");
 ---
 
-<html lang="en">
+<!-- data-lang keeps the original language so scripts can tell when a browser translator changes lang -->
+<html lang={lang} data-lang={lang} translate="no">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="google" content="notranslate" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="author" content="David Konevky" />
-		<meta name="description" content="Desarrollador web, UX/UI, Programación" />
+		<meta name="description" content={t("meta.description")} />
 
 		<link rel="icon" href="/favicon.ico" />
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -20,14 +29,20 @@ import Footer from "../components/footer.astro";
 
 		<!-- Open Graph -->
 		<meta property="og:title" content="David Konevky | Design Engineer" />
-		<meta property="og:description" content="Design engineer. I build interfaces and experiences for the modern web." />
-		<meta property="og:url" content="https://david-konevky-porfolio.vercel.app/" />
+		<meta property="og:description" content={t("meta.ogDescription")} />
+		<meta property="og:url" content={site + localizePath("/", lang)} />
+		<meta property="og:locale" content={lang === "es" ? "es_AR" : "en_US"} />
 		<meta property="og:type" content="website" />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="David Konevky | Design Engineer" />
-		<meta name="twitter:description" content="Design engineer. I build interfaces and experiences for the modern web." />
+		<meta name="twitter:description" content={t("meta.ogDescription")} />
+
+		{isHome && (Object.keys(languages) as Lang[]).map((l) => (
+			<link rel="alternate" hreflang={l} href={site + localizePath("/", l)} />
+		))}
+		{isHome && <link rel="alternate" hreflang="x-default" href={site + localizePath("/", defaultLang)} />}
 
 		<link rel="preload" href="/fonts/doto-900.woff2" as="font" type="font/woff2" crossorigin />
 		<style is:inline>
@@ -43,7 +58,7 @@ import Footer from "../components/footer.astro";
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 		<script defer src="https://cloud.umami.is/script.js" data-website-id="d37bbbd6-0a4a-4b95-bca8-4d9f214f37c2"></script>
-		<title>David Konevky - Portfolio | Design Engineer</title>
+		<title>{t("meta.title")}</title>
 	</head>
 	<body class="font-geist font-light overflow-x-hidden">
         <Nav />

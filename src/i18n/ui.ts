@@ -94,7 +94,7 @@ export const ui = {
 
     "education.title": "Formación",
     "education.university": "Estudiante de 2.º año en la Universidad Tecnológica Nacional",
-    "education.studying": "Actualmente estudiando Programación",
+    "education.studying": "Actualmente estudiando Tecnicatura de Programación",
 
     "blog.title": ["Si querés", "saber más", "sobre", "el detrás de escena:"],
     "blog.text":
